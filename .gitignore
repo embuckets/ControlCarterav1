@@ -1,2 +1,5 @@
 nbproject/private
 build
+cartera
+derby.log
+*.xlsx
