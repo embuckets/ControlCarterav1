@@ -52,10 +52,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            BorderPane page = (BorderPane) FXMLLoader.load(Main.class.getResource("Home.fxml"));
+            VBox page = (VBox) FXMLLoader.load(Main.class.getResource("Home.fxml"));
             Scene scene = new Scene(page);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Control de Cartera");
+            primaryStage.setMaximized(true);
             primaryStage.show();
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

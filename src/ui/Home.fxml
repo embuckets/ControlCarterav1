@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -29,206 +30,208 @@
 <!--<?import ui.HomeController?>-->
 <!--<?import ui.RenovacionCheckBoxFactory?>-->
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.HomeController">
-    <top>
-        <VBox BorderPane.alignment="CENTER">
-            <children>
-                <MenuBar>
-                    <menus>
-                        <Menu mnemonicParsing="false" text="File">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-                <HBox alignment="CENTER_RIGHT" spacing="10.0" VBox.vgrow="ALWAYS">
-                    <children>
-                        <Button mnemonicParsing="false" text="Buscar" />
-                        <Button mnemonicParsing="false" text="+" />
-                    </children>
-                    <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                    </padding>
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                </HBox>
-            </children>
-        </VBox>
-    </top>
-    <right>
-        <VBox prefWidth="350.0" BorderPane.alignment="CENTER">
-            <children>
-                <Accordion VBox.vgrow="ALWAYS">
-                    <panes>
-                        <TitledPane animated="false" text="Renovaciones">
-                            <content>
-                                <TableView>
-                                    <columns>
-                                        <TableColumn prefWidth="75.0" text="Cliente" />
-                                        <TableColumn prefWidth="75.0" text="Poliza" />
-                                        <TableColumn prefWidth="75.0" text="Fin de Vigencia" />
-                                        <TableColumn prefWidth="75.0" text="Notificar">
-                                            <!--                                            <cellValueFactory>
-                                                <RenovacionCheckBoxFactory/> 
-                                                This is how the magic happens
-                                            </cellValueFactory>-->
-                                            <graphic>
-                                                <CheckBox mnemonicParsing="false" text="CheckBox" />
-                                            </graphic>
-                                        </TableColumn>
-                                    </columns>
-                                </TableView>
-                            </content>
-                        </TitledPane>
-                        <TitledPane animated="false" text="Recibos">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                            </content>
-                        </TitledPane>
-                        <TitledPane animated="false" text="Cumpleaños">
-                            <content>
-                                <TableView fx:id="tableCumple">
-                                    <columns>
-                                        <TableColumn fx:id="colNombre" text="Nombre" />
-                                        <TableColumn fx:id="colNacimiento" text="Fecha de Nacimiento" />
-                                        <TableColumn fx:id="colNotificar" text="Notificar">
-<!--                                            <cellValueFactory>
-                                                <HomeController/> 
-                                            </cellValueFactory>-->
-                                            <graphic>
-                                                <CheckBox fx:id="checkNotificarCumple" onAction="#notificarTodosCumple" mnemonicParsing="false" />
-                                            </graphic>
-                                        </TableColumn>
-                                    </columns>
-                                </TableView>
-                            </content>
-                        </TitledPane>
-                    </panes>
-                </Accordion>
-            </children>
-            <BorderPane.margin>
-                <Insets bottom="10.0" right="10.0" />
-            </BorderPane.margin>
-        </VBox>
-    </right>
-    <center>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <top>
-                <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-                    <tabs>
-                        <Tab text="Clientes">
-                            <content>
-                                <GridPane alignment="CENTER" hgap="10.0" vgap="10.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints vgrow="NEVER" />
-                                        <RowConstraints vgrow="NEVER" />
-                                        <RowConstraints vgrow="NEVER" />
-                                        <RowConstraints vgrow="NEVER" />
-                                    </rowConstraints>
-                                    <children>
-                                        <Label text="Nombre" />
-                                        <Label text="Apellido Paterno" GridPane.columnIndex="1" />
-                                        <Label text="Apellido Materno" GridPane.columnIndex="2" />
-                                        <TextField GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <TilePane alignment="BOTTOM_RIGHT" hgap="10.0" prefColumns="2" prefRows="1" tileAlignment="CENTER_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                            <children>
-                                                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Filtrar" />
-                                                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Quitar filtros" />
-                                            </children>
-                                            <GridPane.margin>
-                                                <Insets top="20.0" />
-                                            </GridPane.margin>
-                                            <BorderPane.margin>
-                                                <Insets />
-                                            </BorderPane.margin>
-                                        </TilePane>
-                                    </children>
-                                    <padding>
-                                        <Insets left="10.0" right="10.0" />
-                                    </padding>
-                                </GridPane>
-                            </content>
-                        </Tab>
-                        <Tab text="Polizas">
-                            <content>
-                                <GridPane alignment="CENTER" hgap="10.0" vgap="10.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints vgrow="NEVER" />
-                                        <RowConstraints vgrow="NEVER" />
-                                        <RowConstraints vgrow="NEVER" />
-                                    </rowConstraints>
-                                    <padding>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                    </padding>
-                                    <children>
-                                        <Label text="Numero" />
-                                        <Label text="Aseguradora" GridPane.columnIndex="1" />
-                                        <Label text="Ramo" GridPane.columnIndex="2" />
-                                        <TextField GridPane.rowIndex="1" />
-                                        <ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <ComboBox GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <TilePane alignment="BOTTOM_RIGHT" hgap="10.0" prefColumns="2" prefRows="1" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                            <children>
-                                                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Filtrar" />
-                                                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Quitar filtros" />
-                                            </children>
-                                            <GridPane.margin>
-                                                <Insets top="20.0" />
-                                            </GridPane.margin>
-                                        </TilePane>
-                                    </children>
-                                </GridPane>
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </top>
-            <padding>
-                <Insets right="10.0" />
-            </padding>
-            <BorderPane.margin>
-                <Insets bottom="10.0" left="10.0" />
-            </BorderPane.margin>
-            <center>
-                <TreeTableView minWidth="-1.0" showRoot="false" BorderPane.alignment="CENTER">
-                    <columns>
-                        <TreeTableColumn minWidth="-1.0" prefWidth="-1.0" text="Nombre" />
-                        <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Aseguradora" />
-                        <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Ramo" />
-                        <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Plan" />
-                    </columns>
-                    <columnResizePolicy>
-                        <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                </TreeTableView>
-            </center>
-        </BorderPane>
-    </center>
-    <padding>
-        <Insets bottom="10.0" />
-    </padding>
-</BorderPane>
+
+<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.HomeController">
+   <children>
+          <MenuBar>
+              <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                      <items>
+                          <MenuItem mnemonicParsing="false" text="Close" />
+                      </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                      <items>
+                          <MenuItem mnemonicParsing="false" text="Delete" />
+                      </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                      <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                      </items>
+                  </Menu>
+              </menus>
+          </MenuBar>
+      <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+         <content>
+            <BorderPane minHeight="-Infinity" minWidth="-Infinity">
+                <right>
+                    <VBox BorderPane.alignment="CENTER">
+                        <children>
+                            <Accordion VBox.vgrow="ALWAYS">
+                                <panes>
+                                    <TitledPane animated="false" text="Renovaciones">
+                                        <content>
+                                            <TableView>
+                                                <columns>
+                                                    <TableColumn prefWidth="75.0" text="Cliente" />
+                                                    <TableColumn prefWidth="75.0" text="Poliza" />
+                                                    <TableColumn prefWidth="75.0" text="Fin de Vigencia" />
+                                                    <TableColumn prefWidth="75.0" text="Notificar">
+                                                        <!--                                            <cellValueFactory>
+                                                            <RenovacionCheckBoxFactory/> 
+                                                            This is how the magic happens
+                                                        </cellValueFactory>-->
+                                                        <graphic>
+                                                            <CheckBox mnemonicParsing="false" text="CheckBox" />
+                                                        </graphic>
+                                                    </TableColumn>
+                                                </columns>
+                                            </TableView>
+                                        </content>
+                                    </TitledPane>
+                                    <TitledPane animated="false" text="Recibos">
+                                        <content>
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        </content>
+                                    </TitledPane>
+                                    <TitledPane animated="false" text="Cumpleaños">
+                                        <content>
+                                            <TableView fx:id="tableCumple">
+                                                <columns>
+                                                    <TableColumn fx:id="colNombre" text="Nombre" />
+                                                    <TableColumn fx:id="colNacimiento" text="Fecha de Nacimiento" />
+                                                    <TableColumn fx:id="colNotificar" text="Notificar">
+            <!--                                            <cellValueFactory>
+                                                            <HomeController/> 
+                                                        </cellValueFactory>-->
+                                                        <graphic>
+                                                            <CheckBox fx:id="checkNotificarCumple" mnemonicParsing="false" onAction="#notificarTodosCumple" />
+                                                        </graphic>
+                                                    </TableColumn>
+                                                </columns>
+                                            </TableView>
+                                        </content>
+                                    </TitledPane>
+                                </panes>
+                            </Accordion>
+                        </children>
+                        <BorderPane.margin>
+                            <Insets bottom="10.0" right="10.0" />
+                        </BorderPane.margin>
+                    </VBox>
+                </right>
+                <center>
+                    <BorderPane minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+                        <top>
+                            <TabPane minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                <tabs>
+                                    <Tab text="Clientes">
+                                        <content>
+                                            <GridPane hgap="10.0" vgap="10.0">
+                                                <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                </columnConstraints>
+                                                <rowConstraints>
+                                                    <RowConstraints vgrow="NEVER" />
+                                                    <RowConstraints vgrow="NEVER" />
+                                                    <RowConstraints vgrow="NEVER" />
+                                                    <RowConstraints vgrow="NEVER" />
+                                                </rowConstraints>
+                                                <children>
+                                                    <Label text="Nombre" />
+                                                    <Label text="Apellido Paterno" GridPane.columnIndex="1" />
+                                                    <Label text="Apellido Materno" GridPane.columnIndex="2" />
+                                                    <TextField GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                    <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                    <TilePane alignment="BOTTOM_RIGHT" hgap="20.0" prefColumns="2" prefRows="1" tileAlignment="CENTER_RIGHT" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER">
+                                                        <children>
+                                                            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Filtrar" />
+                                                            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Quitar filtros" />
+                                                        </children>
+                                                        <GridPane.margin>
+                                                            <Insets top="20.0" />
+                                                        </GridPane.margin>
+                                                        <BorderPane.margin>
+                                                            <Insets />
+                                                        </BorderPane.margin>
+                                                    </TilePane>
+                                                </children>
+                                                <padding>
+                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                </padding>
+                                            </GridPane>
+                                        </content>
+                                    </Tab>
+                                    <Tab text="Polizas">
+                                        <content>
+                                            <GridPane hgap="10.0" vgap="10.0">
+                                                <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                </columnConstraints>
+                                                <rowConstraints>
+                                                    <RowConstraints vgrow="NEVER" />
+                                                    <RowConstraints vgrow="NEVER" />
+                                                    <RowConstraints vgrow="NEVER" />
+                                                </rowConstraints>
+                                                <padding>
+                                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                </padding>
+                                                <children>
+                                                    <Label text="Numero" />
+                                                    <Label text="Aseguradora" GridPane.columnIndex="1" />
+                                                    <Label text="Ramo" GridPane.columnIndex="2" />
+                                                    <TextField GridPane.rowIndex="1" />
+                                                    <ComboBox GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+                                                    <ComboBox GridPane.columnIndex="2" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+                                                    <TilePane alignment="BOTTOM_RIGHT" hgap="20.0" prefColumns="2" prefRows="1" tileAlignment="CENTER_RIGHT" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+                                                        <children>
+                                                            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Filtrar" />
+                                                            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Quitar filtros" />
+                                                        </children>
+                                                        <GridPane.margin>
+                                                            <Insets top="20.0" />
+                                                        </GridPane.margin>
+                                                    </TilePane>
+                                                </children>
+                                            </GridPane>
+                                        </content>
+                                    </Tab>
+                                </tabs>
+                            </TabPane>
+                        </top>
+                        <padding>
+                            <Insets right="10.0" />
+                        </padding>
+                        <BorderPane.margin>
+                            <Insets bottom="10.0" left="10.0" />
+                        </BorderPane.margin>
+                        <center>
+                            <TreeTableView minWidth="-Infinity" showRoot="false" BorderPane.alignment="CENTER">
+                                <columns>
+                                    <TreeTableColumn minWidth="-1.0" prefWidth="-1.0" text="Nombre" />
+                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Aseguradora" />
+                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Ramo" />
+                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Plan" />
+                                </columns>
+                                <columnResizePolicy>
+                                    <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                </columnResizePolicy>
+                            </TreeTableView>
+                        </center>
+                    </BorderPane>
+                </center>
+               <top>
+                      <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+                          <children>
+                              <Button mnemonicParsing="false" text="Buscar" />
+                              <Button mnemonicParsing="false" text="+" />
+                          </children>
+                          <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                          </padding>
+                      </HBox>
+               </top>
+            </BorderPane>
+         </content>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+      </ScrollPane>
+   </children>
+</VBox>
