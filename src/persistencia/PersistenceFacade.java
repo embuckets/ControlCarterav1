@@ -34,5 +34,9 @@ public class PersistenceFacade {
     public Set<Object> buscarTodos(Class clase) {
         return mappers.get(clase).readAll();
     }
+    
+    public void create(Object object, Class clase) {
+        mappers.get(clase).create(object);
+    }
 
 }

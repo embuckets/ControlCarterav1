@@ -16,5 +16,6 @@ public interface Mapper {
 
     <T> Set<T> read(Parametros propiedades);
     <T> Set<T> readAll();
+    void create(Object object);
 
 }

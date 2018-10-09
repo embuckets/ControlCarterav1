@@ -5,6 +5,8 @@
  */
 package ui;
 
+import dominio.Asegurado;
+import dominio.ControlCartera;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -114,6 +116,19 @@ public class NuevoAseguradoController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void guardar(ActionEvent event) {
+        String nombre = textNombre.getText();
+        String paterno = textPaterno.getText();
+        String materno = textMaterno.getText();
+        //TODO: Validar los valores
+        
+        Asegurado asegurado = new Asegurado(nombre, paterno, materno);
+        //TODO: deberia ser recurrente?? con Task de javafx??
+        ControlCartera.getInstance().guardar(asegurado, asegurado.getClass());
+        //asegurado home
+        
     }
 
 }

@@ -6,12 +6,14 @@
 package persistencia;
 
 import dominio.Asegurado;
-import java.sql.DatabaseMetaData;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashSet;
-
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static persistencia.BaseDatos.printSQLException;
 import utils.Parametros;
 import utils.ParametrosAsegurado;
 
@@ -20,6 +22,9 @@ import utils.ParametrosAsegurado;
  * @author emilio
  */
 public class AseguradoMapper implements Mapper {
+    private final String COL_NOMBRE = "nombre";
+    private final String COL_APELLIDO_PATERNO = "apPaterno";
+    private final String COL_APELLIDO_MATERNO = "apMaterno";
     
 
     //
@@ -55,6 +60,36 @@ public class AseguradoMapper implements Mapper {
     @Override
     public <T> Set<T> readAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Object object) {
+        Asegurado asegurado = (Asegurado)object;
+        PreparedStatement prepStatement = null;
+        try {
+            Connection conn = BaseDatos.getInstance().getConnection();
+            prepStatement = conn.prepareStatement("INSERT INTO asegurados VALUES(DEFAULT,?,?,?,?,?)");
+            prepStatement.setString(1, asegurado.getNombre());
+            //TODO: todo mayusculas?? o Capitalize???
+            prepStatement.setString(2, asegurado.getApellidoPaterno().map(String::toString).orElse(""));
+            prepStatement.setString(3, asegurado.getApellidoMaterno().map(String::toString).orElse(""));
+            prepStatement.setString(4, asegurado.getRFC().map(String::toString).orElse(null));
+            prepStatement.setDate(5, (asegurado.getNacimiento().isPresent() ? java.sql.Date.valueOf(asegurado.getNacimiento().get()) : null));
+            prepStatement.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AseguradoMapper.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (prepStatement != null) {
+                try {
+                    prepStatement.close();
+                    prepStatement = null;
+                } catch (SQLException ex) {
+                    printSQLException(ex);
+                }
+            }
+        }
+        
     }
 
 }
