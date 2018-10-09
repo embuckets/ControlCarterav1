@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.NuevoAseguradoController">
    <children>
       <MenuBar VBox.vgrow="NEVER">
         <menus>
@@ -71,16 +71,16 @@
                               <Label text="Tipo de persona" GridPane.rowIndex="1" />
                               <HBox alignment="CENTER_LEFT" spacing="30.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" text="Fisica" />
-                                    <RadioButton mnemonicParsing="false" text="Moral" />
+                                    <RadioButton fx:id="radioPersonaFisica" mnemonicParsing="false" text="Fisica" />
+                                    <RadioButton fx:id="radioPersonaMoral" mnemonicParsing="false" text="Moral" />
                                  </children>
                               </HBox>
                               <Label text="Nombre" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="textNombre" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label text="Apellido Paterno" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <Label text="Apellido Materno" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                              <TextField fx:id="textPaterno" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="textMaterno" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                         <GridPane minHeight="-Infinity">
@@ -99,10 +99,10 @@
                               <Label text="Informacion de Personal" GridPane.columnSpan="2147483647" />
                               <Label text="Telefono" GridPane.rowIndex="1" />
                               <Label text="E-mail" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <TextField fx:id="textTelefono" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="textEmail" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label text="RFC" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="textRfc" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                         <GridPane minHeight="-Infinity">
@@ -123,19 +123,19 @@
                            <children>
                               <Label text="Domicilio" GridPane.columnSpan="2147483647" />
                               <Label text="Calle" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="textCalle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label text="No. Interior" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label text="No. Exterior" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                              <TextField GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                              <TextField fx:id="textNoExterior" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                              <TextField fx:id="textNoInterior" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <TextField fx:id="textCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="textColonia" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="textDelegacion" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                               <Label text="Codigo Postal" GridPane.rowIndex="2" />
                               <Label text="Colonia" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <Label text="Delegacion" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                               <Label text="Estado" GridPane.rowIndex="3" />
-                              <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ComboBox fx:id="comboBoxEstado" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <GridPane minHeight="-Infinity">
@@ -151,7 +151,7 @@
                            <children>
                               <Label text="Documentos" GridPane.columnSpan="2147483647" />
                               <Label text="Tipo de documento" GridPane.rowIndex="1" />
-                              <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="comboBoxDocumento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Button mnemonicParsing="false" text="Elegir archivo" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
@@ -165,13 +165,13 @@
                           </rowConstraints>
                            <children>
                               <Label text="Notas" GridPane.columnSpan="2147483647" />
-                              <TextArea GridPane.rowIndex="1" />
+                              <TextArea fx:id="textNota" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                         <HBox alignment="BOTTOM_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0" VBox.vgrow="NEVER">
                            <children>
                               <Button mnemonicParsing="false" text="Guardar" />
-                              <Button mnemonicParsing="false" text="Cancelar" />
+                              <Button mnemonicParsing="false" onAction="#homePage" text="Cancelar" />
                            </children>
                         </HBox>
                      </children>

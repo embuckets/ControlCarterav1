@@ -6,6 +6,7 @@
 package ui;
 
 import dominio.Asegurado;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,13 +23,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 /**
@@ -50,6 +63,9 @@ public class HomeController implements Initializable {
     
     @FXML
     private CheckBox checkNotificarCumple;
+    
+    @FXML
+    private Button buttonNuevo;
 
     /**
      * Initializes the controller class.
@@ -128,6 +144,34 @@ public class HomeController implements Initializable {
         
         tableCumple.setItems(asegurados);
 
+    }
+    
+    public void abrirSceneNuevoAsegurado(ActionEvent event) {
+        try {
+            Parent parent = FXMLLoader.load(getClass().getResource("NuevoAsegurado.fxml"));
+            
+//            VBox page = (VBox) FXMLLoader.load(getClass().getResource("NuevoAsegurado.fxml"));
+            Scene newScene = new Scene(parent);
+            
+            Stage mainWindow = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            mainWindow.getScene().getRoot().setEffect(new GaussianBlur());
+            
+            Stage popUpStage = new Stage(StageStyle.DECORATED);
+            popUpStage.initOwner(mainWindow);
+            popUpStage.initModality(Modality.APPLICATION_MODAL);
+            popUpStage.setScene(newScene);
+//            popUpStage.setMaximized(true);
+            popUpStage.show();
+            
+//            mainWindow.setScene(newScene);
+//            mainWindow.setMaximized(true);
+//            mainWindow.show();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }
 
 }
