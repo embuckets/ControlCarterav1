@@ -170,7 +170,7 @@
                         </GridPane>
                         <HBox alignment="BOTTOM_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0" VBox.vgrow="NEVER">
                            <children>
-                              <Button mnemonicParsing="false" text="Guardar" />
+                              <Button mnemonicParsing="false" onAction="#guardar" text="Guardar" />
                               <Button mnemonicParsing="false" onAction="#homePage" text="Cancelar" />
                            </children>
                         </HBox>

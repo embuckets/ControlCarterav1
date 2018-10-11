@@ -5,6 +5,7 @@
  */
 package dominio;
 
+import java.sql.SQLException;
 import persistencia.BaseDatos;
 import persistencia.PersistenceFacade;
 
@@ -30,9 +31,12 @@ public class ControlCartera {
         return instance;
     }
 
-    public void guardar(Object object, Class clase) {
+    public void guardar(Object object, Class clase) throws SQLException {
         persistenceFacade.create(object, clase);
-
+    }
+    
+    public void detenerBaseDeDatos(){
+        persistenceFacade.detenerBaseDeDatos();
     }
 
 }

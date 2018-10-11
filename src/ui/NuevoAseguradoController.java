@@ -9,24 +9,25 @@ import dominio.Asegurado;
 import dominio.ControlCartera;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.stage.Stage;
+import persistencia.BaseDatos;
 
 /**
  * FXML Controller class
@@ -106,28 +107,51 @@ public class NuevoAseguradoController implements Initializable {
         radioPersonaMoral.setToggleGroup(group);
     }
 
-    public void homePage(ActionEvent event) {
-        try {
-            Parent parent = FXMLLoader.load(getClass().getResource("Home.fxml"));
-            Scene newScene = new Scene(parent);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(newScene);
-
-        } catch (IOException ex) {
-            Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void homePage(ActionEvent event) throws IOException {
+        Main.getInstance().changeSceneContent("Home.fxml");
+//        
+//        try {
+//            Parent parent = FXMLLoader.load(getClass().getResource("Home.fxml"));
+//            Scene newScene = new Scene(parent);
+//            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            stage.setScene(newScene);
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
-    
-    public void guardar(ActionEvent event) {
+
+    public void guardar(ActionEvent event) throws IOException {
         String nombre = textNombre.getText();
         String paterno = textPaterno.getText();
         String materno = textMaterno.getText();
         //TODO: Validar los valores
-        
+
         Asegurado asegurado = new Asegurado(nombre, paterno, materno);
-        //TODO: deberia ser recurrente?? con Task de javafx??
-        ControlCartera.getInstance().guardar(asegurado, asegurado.getClass());
-        //asegurado home
+        try {
+            //        Main.getInstance().setNombre(nombre);
+            //TODO: insertat a la base de datos deberia ser recurrente?? con Task de javafx??
+            ControlCartera.getInstance().guardar(asegurado, asegurado.getClass());
+            //controlCartera dame el id del asegurado
+            //guuardar(domicilio, Domicilio.getClass())
+            //guardar telefono
+            //guardar notas, etc
+            
+            //asegurado home
+        } catch (SQLException ex) {
+            Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
+            BaseDatos.printSQLException(ex);
+            return;
+        }
+        
+//        Main.getInstance().changeSceneContent("AseguradoHome.fxml");
+
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("AseguradoHome.fxml"), null, new JavaFXBuilderFactory());
+        Parent parent = loader.load();
+        AseguradoHomeController controller = loader.<AseguradoHomeController>getController();
+        controller.setAsegurado(asegurado);
+//        loader.setController(controller);
+        Main.getInstance().changeSceneContent(parent);
         
     }
 

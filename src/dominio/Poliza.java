@@ -96,7 +96,10 @@ public class Poliza {
 
     public Poliza(String ramo) {
         this.ramo = determinarRamo(ramo);
+    }
 
+    public void setAseguradora(String asegurdora) {
+        this.aseguradora = aseguradora;
     }
 
     public String getNumero() {

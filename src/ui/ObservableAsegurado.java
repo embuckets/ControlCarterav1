@@ -8,6 +8,7 @@ package ui;
 import dominio.Asegurado;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -22,6 +23,7 @@ public class ObservableAsegurado {
     public StringProperty nombreProperty;
     public StringProperty nacimientoProperty;
     public BooleanProperty notificarProperty;
+    public List<ObservablePoliza> polizasProperty;
 
     public ObservableAsegurado(Asegurado asegurado) {
         this.nombreProperty = new SimpleStringProperty(asegurado.getNombre());

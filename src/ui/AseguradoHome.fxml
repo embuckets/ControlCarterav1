@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AseguradoHomeController">
    <children>
       <MenuBar>
         <menus>
@@ -71,15 +71,15 @@
                                                 <Label text="Nombre" />
                                                 <Label text="Nombre" GridPane.rowIndex="1" />
                                                 <Label text="Apellido Paterno" GridPane.rowIndex="2" />
-                                                <TextField editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="textNombre" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="textPaterno" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                    <children>
                                                       <Button mnemonicParsing="false" text="edit" />
                                                    </children>
                                                 </HBox>
                                                 <Label text="Apellido Materno" GridPane.rowIndex="3" />
-                                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField fx:id="textMaterno" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                              </children>
                                           </GridPane>
                                           <BorderPane>

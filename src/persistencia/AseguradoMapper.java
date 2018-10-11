@@ -63,7 +63,7 @@ public class AseguradoMapper implements Mapper {
     }
 
     @Override
-    public void create(Object object) {
+    public void create(Object object) throws SQLException{
         Asegurado asegurado = (Asegurado)object;
         PreparedStatement prepStatement = null;
         try {
@@ -79,6 +79,7 @@ public class AseguradoMapper implements Mapper {
             
         } catch (SQLException ex) {
             Logger.getLogger(AseguradoMapper.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         } finally {
             if (prepStatement != null) {
                 try {
@@ -89,6 +90,11 @@ public class AseguradoMapper implements Mapper {
                 }
             }
         }
+        
+    }
+
+    @Override
+    public <T> Set<T> read(int id) {
         
     }
 

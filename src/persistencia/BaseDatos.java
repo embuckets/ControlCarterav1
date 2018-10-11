@@ -46,15 +46,10 @@ public class BaseDatos {
     private static final String FRAMEWORK = "embedded";
     private static final String PROTOCOL = "jdbc:derby:";
     private static final String DB_NAME = "cartera";
-    
+
 //    private static final String ASEGURADOS_COL_NAME_ID = "aseguradoId";
 //    private static final String ASEGURADOS_COL_NAME_NOMBRE = "nombre";
 //    private static final String ASEGURADOS_COL_NAME_AP_PATERNO = "apPaterno";
-    
-    
-    
-    
-    
     private static BaseDatos instance;
     private static Connection connection;
     private static String USER;
@@ -71,8 +66,6 @@ public class BaseDatos {
         }
         return instance;
     }
-    
-    
 
     public void crearBaseDeDatos() {
         String CREAR_TABLA_ASEGURADOS = "CREATE TABLE asegurados("
@@ -135,11 +128,12 @@ public class BaseDatos {
                 + "sumaAsegurada DECIMAL(9,2),"
                 + "monedaSumaAsegurada varchar(10),"
                 + "coaseguro SMALLINT,"//porcentaje
+                //+ "estado varchar(6) NOT NULL, CHECK(estado IN ('vigente, 'vieja'')),"
                 + "comentarios varchar(70),"
                 + "PRIMARY KEY (polizaId),"
                 + "CONSTRAINT UNQ_poliza UNIQUE (numero, inicioVigencia),"
                 + "CONSTRAINT CHK_moneda CHECK (moneda IN ('pesos','dolares','umam') AND "
-                + "monedaDeducible IN ('pesos','dolares','umam') AND "
+                + "monedaDeducible IN ('pesoactuals','dolares','umam') AND "
                 + "monedaSumaAsegurada IN ('pesos','dolares','umam'))"
                 + ")";
         String CREAR_TABLA_RECIBOS = "CREATE TABLE recibos("
@@ -270,7 +264,7 @@ public class BaseDatos {
 
     public void detenerBaseDeDatos() {
         try {
-            if (connection != null ){
+            if (connection != null) {
                 connection.close();
                 connection = null;
             }
@@ -574,14 +568,16 @@ public class BaseDatos {
     }
 
     public Connection getConnection() throws SQLException {
-        try {
-            Properties props = new Properties();
-            props.put("user", USER);
-            props.put("password", PASSWORD);
-            connection = DriverManager.getConnection(PROTOCOL + DB_NAME, props);
-        } catch (SQLException e) {
+        if (connection == null) {
+            try {
+                Properties props = new Properties();
+                props.put("user", USER);
+                props.put("password", PASSWORD);
+                connection = DriverManager.getConnection(PROTOCOL + DB_NAME, props);
+            } catch (SQLException e) {
 //            if (e.getSQLState() == "XJ004")
-            throw e;//SQLState = XJ004: database not found
+                throw e;//SQLState = XJ004: database not found
+            }
         }
         return connection;
     }

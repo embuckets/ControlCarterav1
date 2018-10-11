@@ -55,6 +55,10 @@ public class Asegurado {
         return false;
     }
 
+    public void addPoliza(Poliza poliza) {
+        polizas.add(poliza);
+    }
+    
     public int getId() {
         return id;
     }

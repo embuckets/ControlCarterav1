@@ -201,12 +201,10 @@
                             <Insets bottom="10.0" left="10.0" />
                         </BorderPane.margin>
                         <center>
-                            <TreeTableView minWidth="-Infinity" showRoot="false" BorderPane.alignment="CENTER">
+                            <TreeTableView fx:id="treeAsegurados" minWidth="-Infinity" showRoot="false" BorderPane.alignment="CENTER">
                                 <columns>
-                                    <TreeTableColumn minWidth="-1.0" prefWidth="-1.0" text="Nombre" />
-                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Aseguradora" />
-                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Ramo" />
-                                    <TreeTableColumn minWidth="70.0" prefWidth="-1.0" text="Plan" />
+                                    <TreeTableColumn fx:id="nombreTreeTableColumn" minWidth="-1.0" prefWidth="-1.0" text="Nombre" />
+                              <TreeTableColumn fx:id="numeroPolizTreeTableColumn" minWidth="70.0" prefWidth="-1.0" text="Numero Poliza" />
                                 </columns>
                                 <columnResizePolicy>
                                     <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
