@@ -6,6 +6,7 @@
 package persistencia;
 
 import dominio.Poliza;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import utils.Parametros;
@@ -27,5 +28,13 @@ public class PolizaMapper implements Mapper {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+    @Override
+    public <T> Set<T> read(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Object object) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

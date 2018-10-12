@@ -14,6 +14,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -33,6 +34,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
 
 /**
@@ -82,6 +84,9 @@ public class HomeController implements Initializable {
     private void configTreeTableAsegurados() {
         Asegurado asegurado1 = new Asegurado("emilio", "hernandez", "segovia");
         Asegurado asegurado2 = new Asegurado("daniel", "hernandez", "segovia");
+        asegurado1.setNacimiento(LocalDate.of(1993, Month.MAY, 22));
+        asegurado2.setNacimiento(LocalDate.of(1994, Month.SEPTEMBER, 23));
+
         Poliza poliza1 = new Poliza();
         poliza1.setNumero("numeor1");
         poliza1.setAseguradora("AXA");
@@ -99,48 +104,38 @@ public class HomeController implements Initializable {
         list.add(asegurado1);
         list.add(asegurado2);
 
+        List<ObservableAsegurado> obsList = new ArrayList<>();
+        for (Asegurado ase : list) {
+            ObservableAsegurado obsAsegurdo = new ObservableAsegurado(ase);
+            for (Poliza pol : ase.getPolizas()) {
+                ObservablePoliza obsPoliza = new ObservablePoliza(pol);
+                obsAsegurdo.addObservablePoliza(obsPoliza);
+            }
+            obsList.add(obsAsegurdo);
+        }
+
         TreeItem root = new TreeItem(new Asegurado("Control Cartera", "", ""));
         root.setExpanded(true);
 
-//        TreeTableColumn nombreTreeTableColumn = new TreeTableColumn("Nombre");
-    nombreTreeTableColumn.setCellValueFactory(new PropertyValueFactory("nombre"));
+        nombreTreeTableColumn.setCellValueFactory(new TreeItemPropertyValueFactory("nombre"));
+        numeroPolizTreeTableColumn.setCellValueFactory(new TreeItemPropertyValueFactory("numero"));
 
-        nombreTreeTableColumn.setCellValueFactory(new Callback() {
-            @Override
-            public Object call(Object param) {
-                Object dataObj = ((TreeTableColumn.CellDataFeatures) param).getValue().getValue();
-                if (dataObj instanceof Asegurado) {
-                    return new ReadOnlyStringWrapper(((Asegurado) dataObj).getNombre());
-                } else if (dataObj instanceof Poliza) {
-                    return "";
-                }
-                return "";
-            }
-        });
-
-//        TreeTableColumn numeroPolizTreeTableColumn = new TreeTableColumn("No. Poliza");
-//        numeroPolizTreeTableColumn.setCellValueFactory((Object obj) -> {
-//            Object dataObj = ((TreeTableColumn.CellDataFeatures) obj).getValue().getValue();
-//            if (dataObj instanceof Asegurado) {
-//                return null;
-//            } else if (dataObj instanceof Poliza) {
-//                return new ReadOnlyStringWrapper(((Poliza) dataObj).getNumero());
-//            }
-//            return "";
-//        });
-        
-        numeroPolizTreeTableColumn.setCellValueFactory(new PropertyValueFactory("numero"));
-
-        list.stream().forEach((asegurado) -> {
+        obsList.stream().forEach((asegurado) -> {
             TreeItem aseguradoItem = new TreeItem(asegurado);
             root.getChildren().add(aseguradoItem);
-            asegurado.getPolizas().stream().forEach((poliza) -> {
+            asegurado.getObservablePolizas().stream().forEach((poliza) -> {
                 aseguradoItem.getChildren().add(new TreeItem(poliza));
             });
         });
 
         treeAsegurados.setRoot(root);
-//        treeAsegurados.getColumns().setAll(nombreTreeTableColumn, numeroPolizTreeTableColumn);
+        treeAsegurados.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("oldValue: " + oldValue);//item previamente seleccionado
+            System.out.println("newValue: " + newValue);//item actualmente seleccionado ObservableAsegurado | ObservablePoliza
+            System.out.println("observable: " + observable);//item actualmente seleccionado ObservableAsegurado | ObservablePoliza
+            System.out.println();
+        });
+//        treeAsegurados.getSelectionModel().selectedItemProperty().addListener();
     }
 
     private ObservableList<ObservableAsegurado> initializeAsegurados() {
@@ -171,7 +166,7 @@ public class HomeController implements Initializable {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                         asegurado.setNotificado(newValue);
-                        System.out.println(asegurado.nombreProperty + ", " + asegurado.notificarProperty);
+//                        System.out.println(asegurado.nombreProperty + ", " + asegurado.notificarProperty);
                     }
                 });
 
@@ -198,7 +193,7 @@ public class HomeController implements Initializable {
         for (ObservableAsegurado asegurado : asegurados) {
             asegurado.setNotificado(checkBox.isSelected());
             colNotificar.getCellData(asegurado).setSelected(checkBox.isSelected());
-            System.out.println(asegurado.nombreProperty + ", " + asegurado.notificarProperty);
+//            System.out.println(asegurado.nombreProperty + ", " + asegurado.notificarProperty);
 
         }
 

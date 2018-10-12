@@ -9,6 +9,7 @@ import dominio.Asegurado;
 import dominio.Dinero;
 import dominio.Poliza;
 import dominio.Recibo;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ import static org.junit.Assert.*;
  */
 public class BaseDatosTest {
 
-    private BaseDatos baseDatosTested;
+    private BaseDeDatos baseDatosTested;
     private Poliza polizaTested;
     private Asegurado aseguradoTested;
 
@@ -47,7 +48,7 @@ public class BaseDatosTest {
 
     @Before
     public void setUp() {
-//        baseDatosTested = new BaseDatos("emi", "emi");
+        baseDatosTested = BaseDeDatos.getInstance();
         aseguradoTested = new Asegurado("emilio", "hernandez", "segovia");
         aseguradoTested.setId(1);
         polizaTested = new Poliza("NO-789-789", "gnp", aseguradoTested.getId(), "AUToS", "PRODUCTO", "PLAN", LocalDate.now(), "agente", "mensual", new Dinero(BigDecimal.valueOf(12.123f), "pesos"));
@@ -58,7 +59,7 @@ public class BaseDatosTest {
     }
 
     /**
-     * Test of crearBaseDeDatos method, of class BaseDatos.
+     * Test of crearBaseDeDatos method, of class BaseDeDatos.
      */
     @Test
     public void testGetConnection() {
@@ -75,12 +76,17 @@ public class BaseDatosTest {
     }
 
     /**
-     * Test of crearBaseDeDatos method, of class BaseDatos.
+     * Test of crearBaseDeDatos method, of class BaseDeDatos.
      */
     @Test
     public void testCrearBaseDeDatos() {
         System.out.println("crearBaseDeDatos");
-        baseDatosTested.crearBaseDeDatos();
+        try {
+            baseDatosTested.crearBaseDeDatos();
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
 //        baseDatosTested.borrarBaseDeDatos();
 
         // TODO review the generated test code and remove the default call to fail.
@@ -91,14 +97,22 @@ public class BaseDatosTest {
     public void testBorrarAsegurados() {
         System.out.println("borrarAsegurados");
         baseDatosTested.borrarAsegurados();
-        baseDatosTested.detenerBaseDeDatos();
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
 
     @Test
     public void testBorrarPolizas() {
         System.out.println("borrarPolizas");
         baseDatosTested.borrarPolizas();
-        baseDatosTested.detenerBaseDeDatos();
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
 
     @Test
@@ -126,14 +140,14 @@ public class BaseDatosTest {
             baseDatosTested.insertPoliza(polizaTested);
             assertTrue(false);
             //TODO: CHECAR DUPLICADOS, PONER UNIQUE A TODA LA FILA
+            baseDatosTested.detenerBaseDeDatos();
         } catch (SQLException ex) {
             baseDatosTested.printSQLException(ex);
         }
-        baseDatosTested.detenerBaseDeDatos();
     }
 
     /**
-     * Test of insertRecibo method, of class BaseDatos.
+     * Test of insertRecibo method, of class BaseDeDatos.
      */
     @Test
     public void testInsertRecibo() {
@@ -151,7 +165,7 @@ public class BaseDatosTest {
     }
 
     /**
-     * Test of selectRecibos method, of class BaseDatos.
+     * Test of selectRecibos method, of class BaseDeDatos.
      */
     @Test
     public void testSelectRecibos() {
@@ -166,7 +180,7 @@ public class BaseDatosTest {
     }
 
     /**
-     * Test of insertAsegurado method, of class BaseDatos.
+     * Test of insertAsegurado method, of class BaseDeDatos.
      */
     @Test
     public void testInsertAsegurado() {
@@ -236,15 +250,15 @@ public class BaseDatosTest {
         try {
             baseDatosTested.insertAsegurado(asegurado);
             fail("daniela no debia ser insertado");
+            baseDatosTested.detenerBaseDeDatos();
         } catch (SQLException ex) {
-//            baseDatosTested.printSQLException(ex);
+            baseDatosTested.printSQLException(ex);
         }
 
-        baseDatosTested.detenerBaseDeDatos();
     }
 
     /**
-     * Test of SelectAsegurado method, of class BaseDatos.
+     * Test of SelectAsegurado method, of class BaseDeDatos.
      */
     @Test
     public void testSelectAsegurado() {
@@ -258,7 +272,11 @@ public class BaseDatosTest {
 //        System.out.format("%-20s", asegurado.flatMap(Asegurado::getRFC));
 //        System.out.format("%-15t", asegurado.flatMap(Asegurado::getNacimiento));
         System.out.println();
-        baseDatosTested.detenerBaseDeDatos();
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
 
     @Test
@@ -268,11 +286,15 @@ public class BaseDatosTest {
         for (Poliza poliza : polizas) {
             System.out.println(poliza);
         }
-        baseDatosTested.detenerBaseDeDatos();
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
 
     /**
-     * Test of selectTodosAsegurados method, of class BaseDatos.
+     * Test of selectTodosAsegurados method, of class BaseDeDatos.
      */
     @Test
     public void testselectTodosAsegurados() {
@@ -287,29 +309,39 @@ public class BaseDatosTest {
             System.out.format("%-15s", asegurado.getNacimiento());
             System.out.println();
         }
-        baseDatosTested.detenerBaseDeDatos();
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
 
     /**
-     * Test of borrarBaseDeDatos method, of class BaseDatos.
+     * Test of borrarBaseDeDatos method, of class BaseDeDatos.
      */
     @Test
     public void testBorrarBaseDeDatos() {
         System.out.println("eliminarBaseDeDatos");
-        BaseDatos.borrarBaseDeDatos();
-        // TODO review the generated test code and remove the default call to fail.
+        try {
+            BaseDeDatos.borrarBaseDeDatos();
+            // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
-     * Test of detenerBaseDeDatos method, of class BaseDatos.
+     * Test of detenerBaseDeDatos method, of class BaseDeDatos.
      */
     @Test
     public void testDetenerBaseDeDatos() {
         System.out.println("detenerBaseDeDatos");
-        baseDatosTested.detenerBaseDeDatos();
-        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
+        try {
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            baseDatosTested.printSQLException(ex);
+        }
     }
     /**
      * Test of printSQLException method, of class BaseDatos.
@@ -318,23 +350,23 @@ public class BaseDatosTest {
 //    public void testPrintSQLException() {
 //        System.out.println("printSQLException");
 //        SQLException e = null;
-//        BaseDatos.printSQLException(e);
+//        BaseDeDatos.printSQLException(e);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //    /**
-//     * Test of getDataBaseProperties method, of class BaseDatos.
+//     * Test of getDataBaseProperties method, of class BaseDeDatos.
 //     */
 //    @Test
 //    public void testGetDataBaseProperties() {
 //        System.out.println("getDataBaseProperties");
-//        BaseDatos.getDataBaseProperties();
+//        BaseDeDatos.getDataBaseProperties();
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of configurarAutorizacion method, of class BaseDatos.
+//     * Test of configurarAutorizacion method, of class BaseDeDatos.
 //     */
 //    @Test
 //    public void testConfigurarAutorizacion() throws Exception {
@@ -342,7 +374,7 @@ public class BaseDatosTest {
 //        Connection conn = null;
 //        String user = "";
 //        String password = "";
-//        BaseDatos.configurarAutorizacion(conn, user, password);
+//        BaseDeDatos.configurarAutorizacion(conn, user, password);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }

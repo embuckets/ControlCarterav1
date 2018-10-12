@@ -20,30 +20,43 @@ import utils.Parametros;
 public class PersistenceFacade {
 
     private Map<Class, Mapper> mappers;
-    private BaseDatos baseDeDatos;
+    private BaseDeDatos baseDeDatos;
 
     public PersistenceFacade() {
         this.mappers = new HashMap<>();
         this.mappers.put(Asegurado.class, new AseguradoMapper());
         mappers.put(Asegurado.class, new AseguradoMapper());
         mappers.put(Poliza.class, new PolizaMapper());
-        this.baseDeDatos = BaseDatos.getInstance();
+        this.baseDeDatos = BaseDeDatos.getInstance();
     }
+    //TODO: Casi todos se pueden buscar por id. 
+    //ya sea por llave primaria o por foreign key 
+    //que identifica varios registros como telefonos de un asegurado
+//    public <T> Set<T> buscar(Parametros parametros, Class clase) {
+//        return mappers.get(clase).<T>read(parametros);
+//    }
 
-    public <T> Set<T>buscar(Parametros parametros, Class clase) {
+    public <T> Set<T> buscar(Parametros parametros, Class clase) {
         return mappers.get(clase).<T>read(parametros);
     }
-    
-    public Set<Object> buscarTodos(Class clase) {
+
+    public <T> Set<T> buscarTodos(Class clase) {
         return mappers.get(clase).readAll();
     }
-    
+
     public void create(Object object, Class clase) throws SQLException {
         mappers.get(clase).create(object);
     }
-    
-    public void detenerBaseDeDatos(){
-        this.baseDeDatos.detenerBaseDeDatos();
+
+    public void detenerBaseDeDatos() throws SQLException {
+        baseDeDatos.detenerBaseDeDatos();
     }
 
+    public void conectarABaseDeDatos() throws SQLException {
+        baseDeDatos.contectarABaseDeDatos();
+    }
+
+    public void crearBaseDeDatos() throws SQLException {
+        baseDeDatos.crearBaseDeDatos();
+    }
 }

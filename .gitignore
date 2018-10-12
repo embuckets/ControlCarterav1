@@ -3,3 +3,4 @@ build
 cartera
 derby.log
 *.xlsx
+/dist/

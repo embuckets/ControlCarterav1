@@ -31,26 +31,22 @@
  */
 package ui;
 
-import com.sun.xml.internal.ws.api.server.InstanceResolver;
 import dominio.ControlCartera;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     private Stage mainStage;
     private static Main instance;
+    private ControlCartera controlCartera;
     
     public Main() {
         instance = this;
@@ -70,6 +66,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            
+            //si existe base de datos ve a home.fxml
+            // si no existe base de datos mostrar dialogo para importar de excel
             mainStage = primaryStage;
             Parent page = FXMLLoader.load(getClass().getResource("Home.fxml"));
             Scene scene = new Scene(page);

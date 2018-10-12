@@ -27,7 +27,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import persistencia.BaseDatos;
+import persistencia.BaseDeDatos;
 
 /**
  * FXML Controller class
@@ -140,7 +140,7 @@ public class NuevoAseguradoController implements Initializable {
             //asegurado home
         } catch (SQLException ex) {
             Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
-            BaseDatos.printSQLException(ex);
+            BaseDeDatos.printSQLException(ex);
             return;
         }
         
