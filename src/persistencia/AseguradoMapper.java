@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,34 +34,58 @@ public class AseguradoMapper implements Mapper {
     //
     public AseguradoMapper() {
     }
+
     /*Al hacer cualquier operacion CRUD 
     recibir como paramtero el objeto 
     e insertar o leer TODOS sus campos excepto ID por supuesto*/
-
     @Override
-    public <T> Set<T> read(Parametros propiedades) {
+    public <T> Set<T> read(Parametros propiedades) throws SQLException {
         ParametrosAsegurado params = (ParametrosAsegurado) propiedades;
-        String nombre = "", paterno = "", materno = "";
-        nombre = params.getNombre();
-//        
-//        Set<Entry<Object, Object>> entries = params.getPropiedades().entrySet();
-//        for (Entry entry : entries) {
-//            if (entry.getKey().equals("nombre")) {
-//                nombre = (String) entry.getValue();
-//            }
-//            if (entry.getKey().equals("paterno")) {
-//                paterno = (String) entry.getValue();
-//            }
-//            if (entry.getKey().equals("materno")) {
-//                materno = (String) entry.getValue();
-//            }
-//        }
-        HashSet<T> asegurados = new HashSet<>();
-        Asegurado asegurado = new Asegurado(nombre, paterno, materno);
-        asegurados.add((T) asegurado);
+        String query = createQuery(params);
+        Set<T> asegurados = new HashSet<>();
+        ResultSet resultSet = null;
+        try {
+            Connection conn = BaseDeDatos.getInstance().getConnection();
+            Statement statement = conn.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                Asegurado asegurado = new Asegurado(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+                asegurado.setRFC(resultSet.getString(5));
+                asegurado.setNacimiento(resultSet.getDate(6));
+                asegurado.setId(resultSet.getInt(1));
+                asegurados.add((T) asegurado);
+            }
+
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException ex) {
+                    throw ex;
+                }
+            }
+        }
         return asegurados;
+
     }
 
+    public String createQuery(ParametrosAsegurado params) {
+        //TODO: nombres columnas dependen de ParametroAsegurados y solo soporta buscar por nombres
+        String query = "SELECT * FROM asegurados WHERE ";
+        for (Iterator iterator = params.getParametros().iterator(); iterator.hasNext();) {
+            Entry entry = (Entry) iterator.next();
+            query += entry.getKey() + " LIKE '%" + entry.getValue() + "%'";
+            if (iterator.hasNext()) {
+                query += " AND ";
+            }
+        }
+        return query;
+    }
+
+    //TODO: METODO VIEJO
     @Override
     public <T> Set<T> readAll() {
         Set<T> asegurados = new HashSet<T>();
@@ -123,9 +149,43 @@ public class AseguradoMapper implements Mapper {
 
     }
 
+    private <T> Set<T> makeQuery(String query) throws SQLException {
+        Set<T> asegurados = new HashSet<>();
+        ResultSet resultSet = null;
+        try {
+            Connection conn = BaseDeDatos.getInstance().getConnection();
+            Statement statement = conn.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                Asegurado asegurado = new Asegurado(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+                asegurado.setRFC(resultSet.getString(5));
+                asegurado.setNacimiento(resultSet.getDate(6));
+                asegurado.setId(resultSet.getInt(1));
+                asegurados.add((T) asegurado);
+            }
+
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException ex) {
+                    Logger.getLogger(AseguradoMapper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return asegurados;
+    }
+
+//
+//    public Set<Asegurado> buscarAseguradoPor(String nombre, String paterno, String materno) {
+//
+//    }
     @Override
-    public <T> Set<T> read(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public <T> Set<T> read(int id) throws SQLException {
+        return makeQuery("SELECT * FROM asegurados WHERE aseguradoId = " + id);
     }
 
 }

@@ -6,7 +6,10 @@
 package persistencia;
 
 import dominio.Asegurado;
+import dominio.Domicilio;
+import dominio.Email;
 import dominio.Poliza;
+import dominio.Telefono;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +30,9 @@ public class PersistenceFacade {
         this.mappers.put(Asegurado.class, new AseguradoMapper());
         mappers.put(Asegurado.class, new AseguradoMapper());
         mappers.put(Poliza.class, new PolizaMapper());
+        mappers.put(Telefono.class, new TelefonoMapper());
+        mappers.put(Domicilio.class, new DomicilioMapper());
+        mappers.put(Email.class, new EmailMapper());
         this.baseDeDatos = BaseDeDatos.getInstance();
     }
     //TODO: Casi todos se pueden buscar por id. 
@@ -36,8 +42,12 @@ public class PersistenceFacade {
 //        return mappers.get(clase).<T>read(parametros);
 //    }
 
-    public <T> Set<T> buscar(Parametros parametros, Class clase) {
+    public <T> Set<T> buscar(Parametros parametros, Class clase) throws SQLException {
         return mappers.get(clase).<T>read(parametros);
+    }
+
+    public <T> Set<T> buscar(int id, Class clase) throws SQLException {
+        return mappers.get(clase).<T>read(id);
     }
 
     public <T> Set<T> buscarTodos(Class clase) {
@@ -59,4 +69,5 @@ public class PersistenceFacade {
     public void crearBaseDeDatos() throws SQLException {
         baseDeDatos.crearBaseDeDatos();
     }
+
 }

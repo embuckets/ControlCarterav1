@@ -7,10 +7,13 @@ package ui;
 
 import dominio.Asegurado;
 import dominio.ControlCartera;
+import exceptions.BusquedaException;
+import exceptions.RegistroDuplicadoException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,6 +31,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import persistencia.BaseDeDatos;
+import utils.ParametrosAsegurado;
 
 /**
  * FXML Controller class
@@ -132,27 +136,41 @@ public class NuevoAseguradoController implements Initializable {
             //        Main.getInstance().setNombre(nombre);
             //TODO: insertat a la base de datos deberia ser recurrente?? con Task de javafx??
             ControlCartera.getInstance().guardar(asegurado, asegurado.getClass());
+            ParametrosAsegurado params = new ParametrosAsegurado();
+            params.putNombre(nombre);
+            params.putApellidoPaterno(paterno);
+            params.putApellidoMaterno(materno);
+
+            Set<Asegurado> resultados = ControlCartera.getInstance().buscar(params, Asegurado.class);
+            int id = resultados.stream().filter(a
+                    -> nombre.equalsIgnoreCase(a.getNombre()) && paterno.equalsIgnoreCase(a.getApellidoPaterno().get()) && materno.equalsIgnoreCase(a.getApellidoMaterno().get())).findAny().get().getId();
+
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("AseguradoHome.fxml"), null, new JavaFXBuilderFactory());
+            Parent parent = loader.load();
+            AseguradoHomeController controller = loader.<AseguradoHomeController>getController();
+            controller.setAsegurado(asegurado);
+            controller.setAseguradoId(id);
+//        loader.setController(controller);
+            Main.getInstance().changeSceneContent(parent);
             //controlCartera dame el id del asegurado
             //guuardar(domicilio, Domicilio.getClass())
             //guardar telefono
             //guardar notas, etc
-            
+
             //asegurado home
         } catch (SQLException ex) {
-            Logger.getLogger(NuevoAseguradoController.class.getName()).log(Level.SEVERE, null, ex);
             BaseDeDatos.printSQLException(ex);
             return;
+        } catch (RegistroDuplicadoException ex) {
+            ex.printStackTrace();
+            //TODO: desplegar dialogo
+            return;
+        } catch (BusquedaException ex) {
+            ex.printStackTrace();
+            return;
         }
-        
-//        Main.getInstance().changeSceneContent("AseguradoHome.fxml");
 
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("AseguradoHome.fxml"), null, new JavaFXBuilderFactory());
-        Parent parent = loader.load();
-        AseguradoHomeController controller = loader.<AseguradoHomeController>getController();
-        controller.setAsegurado(asegurado);
-//        loader.setController(controller);
-        Main.getInstance().changeSceneContent(parent);
-        
+//        Main.getInstance().changeSceneContent("AseguradoHome.fxml");
     }
 
 }

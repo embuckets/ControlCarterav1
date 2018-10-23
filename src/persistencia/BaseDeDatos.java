@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import config.Configuracion;
+import utils.ParametrosAsegurado;
 
 /**
  *
@@ -84,7 +85,7 @@ public class BaseDeDatos {
                 + ")";
         String CREAR_TABLA_EMAILS = "CREATE TABLE emails("
                 + "aseguradoId INT NOT NULL REFERENCES asegurados(aseguradoId),"
-                + "email varchar(40)"
+                + "email varchar(40) NOT NULL"
                 + ")";
         String CREAR_TABLA_ESTADOS = "CREATE TABLE estados("
                 + "estado varchar(50) NOT NULL UNIQUE"
@@ -588,6 +589,48 @@ public class BaseDeDatos {
         }
         return asegurados;
     }
+    
+    public List<Asegurado> buscarPorParemetros(ParametrosAsegurado params){
+        AseguradoMapper mapper = new AseguradoMapper();
+        String query = mapper.createQuery(params);
+        Connection conn = null;
+        ResultSet resultSet = null;
+        List<Asegurado> asegurados = new ArrayList<Asegurado>();
+        try {
+            conn = getConnection();
+            Statement s = conn.createStatement();
+            resultSet = s.executeQuery(query);
+            while (resultSet.next()) {
+                Asegurado asegurado = new Asegurado(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+                asegurado.setRFC(resultSet.getString(5));
+                asegurado.setNacimiento(resultSet.getDate(6));
+                asegurado.setId(resultSet.getInt(1));
+                asegurados.add(asegurado);
+
+            }
+
+        } catch (SQLException ex) {
+            printSQLException(ex);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException ex) {
+                    printSQLException(ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException ex) {
+                    printSQLException(ex);
+                }
+            }
+        }
+        return asegurados;
+    }
 
     public Optional<Asegurado> selectAsegurado(int id) {
         Connection conn = null;
@@ -637,6 +680,8 @@ public class BaseDeDatos {
         }
         return maybeAsegurado;
     }
+    
+    
 
     private void configurarAutorizacion(Connection conn) throws SQLException {
 

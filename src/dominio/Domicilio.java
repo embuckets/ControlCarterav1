@@ -11,6 +11,7 @@ package dominio;
  */
 public class Domicilio {
 
+    private int aseguradoId;
     private String calle;
     private String numeroExterior;
     private String numeroInterior;
@@ -19,7 +20,8 @@ public class Domicilio {
     private String delegacion;
     private String estado;
 
-    public Domicilio(String calle, String numeroExterior, String numeroInterior, String codigoPostal, String colonia, String delegacion, String estado) {
+    public Domicilio(int aseguradoId, String calle, String numeroExterior, String numeroInterior, String codigoPostal, String colonia, String delegacion, String estado) {
+        this.aseguradoId = aseguradoId;
         this.calle = calle;
         this.numeroExterior = numeroExterior;
         this.numeroInterior = numeroInterior;
@@ -29,7 +31,16 @@ public class Domicilio {
         this.estado = estado;
     }
 
-    public Domicilio() {
+    public Domicilio(int aseguradoId) {
+        this.aseguradoId = aseguradoId;
+    }
+
+    public int getAseguradoId() {
+        return aseguradoId;
+    }
+
+    public void setAseguradoId(int aseguradoId) {
+        this.aseguradoId = aseguradoId;
     }
 
     public String getCalle() {

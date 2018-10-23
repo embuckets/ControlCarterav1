@@ -28,6 +28,7 @@ public class AseguradoHomeController implements Initializable {
     private TextField textMaterno;
 
     private Asegurado asegurado;
+    private int aseguradoId;
 
     /**
      * Initializes the controller class.
@@ -52,8 +53,12 @@ public class AseguradoHomeController implements Initializable {
         this.asegurado = asegurado;
     }
 
-    private void initData() {
+    public void setAseguradoId(int id) {
+        aseguradoId = id;
+    }
 
+    private void initData() {
+        
 //        StringProperty nombre = Main.getInstance().getNombre();
         textNombre.setText(asegurado.getNombre());
 //        

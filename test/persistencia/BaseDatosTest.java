@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import utils.ParametrosAsegurado;
 
 /**
  *
@@ -72,6 +73,24 @@ public class BaseDatosTest {
 //        fail("The test case is a prototype.");
         } catch (SQLException ex) {
             baseDatosTested.printSQLException(ex);
+        }
+    }
+
+    @Test
+    public void testBuscarPorParametros() {
+        System.out.println("bucarPorParametro");
+        ParametrosAsegurado params = new ParametrosAsegurado();
+//        params.putNombre("emi");
+        params.putApellidoMaterno("sego");
+        params.putApellidoPaterno("hernan");
+
+        try {
+            baseDatosTested.contectarABaseDeDatos();
+//            baseDatosTested.insertAsegurado(new Asegurado("daniel", "hernandez", "segovia"));
+            baseDatosTested.buscarPorParemetros(params).forEach((s) -> System.out.println(s));
+            baseDatosTested.detenerBaseDeDatos();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDatosTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -299,6 +318,13 @@ public class BaseDatosTest {
     @Test
     public void testselectTodosAsegurados() {
         System.out.println("selectTodosAsegurados");
+        
+        
+        try {
+            baseDatosTested.contectarABaseDeDatos();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDatosTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         List<Asegurado> asegurados = baseDatosTested.selectTodosAsegurados();
         for (Asegurado asegurado : asegurados) {
             System.out.format("%-8d", asegurado.getId());

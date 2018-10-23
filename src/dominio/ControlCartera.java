@@ -5,15 +5,19 @@
  */
 package dominio;
 
+import exceptions.AsociacionARegistroInexistenteException;
+import exceptions.BusquedaException;
 import exceptions.CreacionCarteraException;
 import exceptions.DetenerCarteraException;
 import exceptions.NoExisteCarteraException;
 import exceptions.RegistroDuplicadoException;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import persistencia.PersistenceFacade;
+import utils.Parametros;
 
 /**
  * representa el sistema
@@ -38,14 +42,14 @@ public class ControlCartera {
         return instance;
     }
 
-    public void guardar(Object object, Class clase) throws RegistroDuplicadoException, SQLException {
+    public void guardar(Object object, Class clase) throws RegistroDuplicadoException, SQLException, AsociacionARegistroInexistenteException {
         try {
             persistenceFacade.create(object, clase);
         } catch (SQLException ex) {
-            if (ex.getErrorCode() == 23505){
+            if (ex.getErrorCode() == 23505) {
                 throw new RegistroDuplicadoException(ex.getMessage(), ex);
-            } else {
-                throw ex;
+            } else if (ex.getErrorCode() == 23503){
+                throw new AsociacionARegistroInexistenteException(ex.getMessage(), ex);
             }
         }
     }
@@ -77,5 +81,22 @@ public class ControlCartera {
     public <T> Set<T> buscarTodos(Class clase) {
         return persistenceFacade.buscarTodos(clase);
     }
-    
+
+    public <T> Set<T> buscar(Parametros parametros, Class clase) throws BusquedaException {
+        try {
+            return persistenceFacade.buscar(parametros, clase);
+        } catch (SQLException ex) {
+            throw new BusquedaException(ex.getMessage(), ex);
+        }
+    }
+
+    public <T> Set<T> buscar(int id, Class clase) throws BusquedaException, SQLException {
+        try {
+            return persistenceFacade.buscar(id, clase);
+        } catch (SQLException ex) {
+            throw ex;
+//            throw new BusquedaException(ex.getMessage(), ex);
+        }
+    }
+
 }
