@@ -70,4 +70,20 @@ public class PersistenceFacade {
         baseDeDatos.crearBaseDeDatos();
     }
 
+    public void beginTransaction() throws SQLException {
+        baseDeDatos.beginTransaction();
+    }
+
+    public void endTransaction() throws SQLException {
+        baseDeDatos.endTransaction();
+    }
+
+    public void commit() throws SQLException {
+        baseDeDatos.commit();
+    }
+
+    public void rollback() throws SQLException {
+        baseDeDatos.rollback();
+    }
+
 }

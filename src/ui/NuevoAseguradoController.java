@@ -7,7 +7,10 @@ package ui;
 
 import dominio.Asegurado;
 import dominio.ControlCartera;
+import exceptions.AsociacionARegistroInexistenteException;
 import exceptions.BusquedaException;
+import exceptions.DatosInvalidosException;
+import exceptions.DatosVaciosException;
 import exceptions.RegistroDuplicadoException;
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -48,6 +52,10 @@ public class NuevoAseguradoController implements Initializable {
     private TextField textNombre;
     @FXML
     private TextField textPaterno;
+    @FXML
+    private Label labelApellidoPaterno;
+    @FXML
+    private Label labelApellidoMaterno;
     @FXML
     private TextField textMaterno;
     @FXML
@@ -77,6 +85,8 @@ public class NuevoAseguradoController implements Initializable {
 
     /**
      * Initializes the controller class.o
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -109,6 +119,25 @@ public class NuevoAseguradoController implements Initializable {
         radioPersonaFisica.setToggleGroup(group);
         radioPersonaFisica.setSelected(true);
         radioPersonaMoral.setToggleGroup(group);
+    }
+    
+    public void tipoPersonaHandler(ActionEvent event) {
+        if (radioPersonaFisica.isSelected()){
+            textPaterno.setText("");
+            textPaterno.setVisible(true);
+            textMaterno.setText("");
+            textMaterno.setVisible(true);
+            labelApellidoMaterno.setVisible(true);
+            labelApellidoPaterno.setVisible(true);
+        }
+        else if (radioPersonaMoral.isSelected()){
+            textPaterno.setText("");
+            textPaterno.setVisible(false);
+            textMaterno.setText("");
+            textMaterno.setVisible(false);
+            labelApellidoMaterno.setVisible(false);
+            labelApellidoPaterno.setVisible(false);
+        }
     }
 
     public void homePage(ActionEvent event) throws IOException {
@@ -145,6 +174,8 @@ public class NuevoAseguradoController implements Initializable {
             int id = resultados.stream().filter(a
                     -> nombre.equalsIgnoreCase(a.getNombre()) && paterno.equalsIgnoreCase(a.getApellidoPaterno().get()) && materno.equalsIgnoreCase(a.getApellidoMaterno().get())).findAny().get().getId();
 
+            
+            
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("AseguradoHome.fxml"), null, new JavaFXBuilderFactory());
             Parent parent = loader.load();
             AseguradoHomeController controller = loader.<AseguradoHomeController>getController();
@@ -166,6 +197,15 @@ public class NuevoAseguradoController implements Initializable {
             //TODO: desplegar dialogo
             return;
         } catch (BusquedaException ex) {
+            ex.printStackTrace();
+            return;
+        } catch (AsociacionARegistroInexistenteException ex) {
+            ex.printStackTrace();
+            return;
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+            return;
+        } catch (DatosInvalidosException ex) {
             ex.printStackTrace();
             return;
         }

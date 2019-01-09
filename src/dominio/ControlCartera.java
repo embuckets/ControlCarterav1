@@ -8,6 +8,8 @@ package dominio;
 import exceptions.AsociacionARegistroInexistenteException;
 import exceptions.BusquedaException;
 import exceptions.CreacionCarteraException;
+import exceptions.DatosInvalidosException;
+import exceptions.DatosVaciosException;
 import exceptions.DetenerCarteraException;
 import exceptions.NoExisteCarteraException;
 import exceptions.RegistroDuplicadoException;
@@ -42,14 +44,20 @@ public class ControlCartera {
         return instance;
     }
 
-    public void guardar(Object object, Class clase) throws RegistroDuplicadoException, SQLException, AsociacionARegistroInexistenteException {
+    public void guardar(Object object, Class clase) throws RegistroDuplicadoException, SQLException, AsociacionARegistroInexistenteException, DatosVaciosException, DatosInvalidosException {
         try {
             persistenceFacade.create(object, clase);
         } catch (SQLException ex) {
-            if (ex.getErrorCode() == 23505) {
+            if ("23505".equals(ex.getSQLState())) {
                 throw new RegistroDuplicadoException(ex.getMessage(), ex);
-            } else if (ex.getErrorCode() == 23503){
+            } else if ("23503".equals(ex.getSQLState())) {
                 throw new AsociacionARegistroInexistenteException(ex.getMessage(), ex);
+            } else if ("23502".equals(ex.getSQLState())) {
+                throw new DatosVaciosException(ex.getMessage(), ex);
+            } else if ("23513".equals(ex.getSQLState())) {
+                throw new DatosInvalidosException(ex.getMessage(), ex);
+            } else {
+                throw ex;
             }
         }
     }
@@ -75,6 +83,38 @@ public class ControlCartera {
             persistenceFacade.crearBaseDeDatos();
         } catch (SQLException ex) {
             throw new CreacionCarteraException(ex.getMessage(), ex);
+        }
+    }
+
+    public void empezarTransaccion() throws SQLException {
+        try {
+            persistenceFacade.beginTransaction();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+
+    public void terminarTransaccion() throws SQLException {
+        try {
+            persistenceFacade.endTransaction();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+
+    public void commit() throws SQLException {
+        try {
+            persistenceFacade.commit();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+
+    public void rollback() throws SQLException {
+        try {
+            persistenceFacade.rollback();
+        } catch (SQLException ex) {
+            throw ex;
         }
     }
 

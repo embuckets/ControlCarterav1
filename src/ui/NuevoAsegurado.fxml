@@ -71,14 +71,14 @@
                               <Label text="Tipo de persona" GridPane.rowIndex="1" />
                               <HBox alignment="CENTER_LEFT" spacing="30.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                                  <children>
-                                    <RadioButton fx:id="radioPersonaFisica" mnemonicParsing="false" text="Fisica" />
-                                    <RadioButton fx:id="radioPersonaMoral" mnemonicParsing="false" text="Moral" />
+                                    <RadioButton fx:id="radioPersonaFisica" mnemonicParsing="false" onAction="#tipoPersonaHandler" text="Fisica" />
+                                    <RadioButton fx:id="radioPersonaMoral" mnemonicParsing="false" onAction="#tipoPersonaHandler" text="Moral" />
                                  </children>
                               </HBox>
                               <Label text="Nombre" GridPane.rowIndex="2" />
                               <TextField fx:id="textNombre" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label text="Apellido Paterno" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                              <Label text="Apellido Materno" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                              <Label fx:id="labelApellidoPaterno" text="Apellido Paterno" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label fx:id="labelApellidoMaterno" text="Apellido Materno" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                               <TextField fx:id="textPaterno" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <TextField fx:id="textMaterno" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                            </children>

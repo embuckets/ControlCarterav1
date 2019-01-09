@@ -4,3 +4,4 @@ cartera
 derby.log
 *.xlsx
 /dist/
+log-in.txt

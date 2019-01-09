@@ -8,10 +8,13 @@ package dominio;
 import exceptions.AsociacionARegistroInexistenteException;
 import exceptions.BusquedaException;
 import exceptions.CreacionCarteraException;
+import exceptions.DatosInvalidosException;
+import exceptions.DatosVaciosException;
 import exceptions.DetenerCarteraException;
 import exceptions.NoExisteCarteraException;
 import exceptions.RegistroDuplicadoException;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,11 +70,41 @@ public class ControlCarteraTest {
      * Test of guardar method, of class ControlCartera.
      */
     @Test
-    public void testGuardarTelefono() {
-        System.out.println("guardarTelefono");
+    public void testGuardarTelefonoRepetido() {
+        System.out.println("== TEST == guardar telefono repetido");
         try {
             controlCarteraTested.conectarACartera();
-            Telefono telefono = new Telefono(2, "5521195514");
+            Telefono telefono = new Telefono(1, "5521195514");
+            controlCarteraTested.guardar(telefono, telefono.getClass());
+            controlCarteraTested.guardar(telefono, telefono.getClass()); //debe ser unico
+            controlCarteraTested.detenerCartera();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            BaseDeDatos.printSQLException(ex);
+        } catch (DetenerCarteraException ex) {
+            ex.printStackTrace();
+        } catch (NoExisteCarteraException ex) {
+            ex.printStackTrace();
+        } catch (RegistroDuplicadoException ex) {
+            ex.printStackTrace();
+        } catch (AsociacionARegistroInexistenteException ex) {
+            ex.printStackTrace();
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Test of guardar method, of class ControlCartera.
+     */
+    @Test
+    public void testGuardarTelefonoInvalido() {
+        System.out.println("== TEST == guardar telefono invalido");
+        try {
+            controlCarteraTested.conectarACartera();
+            Telefono telefono = new Telefono(1, null);
             controlCarteraTested.guardar(telefono, telefono.getClass());
             controlCarteraTested.detenerCartera();
         } catch (SQLException ex) {
@@ -85,6 +118,10 @@ public class ControlCarteraTest {
             ex.printStackTrace();
         } catch (AsociacionARegistroInexistenteException ex) {
             ex.printStackTrace();
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -92,8 +129,95 @@ public class ControlCarteraTest {
      * Test of guardar method, of class ControlCartera.
      */
     @Test
-    public void testGuardar() {
-        System.out.println("guardar");
+    public void testGuardarDomicilioDuplicado() {
+        System.out.println("== TEST == guardar domicilio duplicado");
+        try {
+            controlCarteraTested.conectarACartera();
+            Domicilio domicilio = new Domicilio(1, "Aniceto Ortega", "1330", "casa", "03100", "del valle", "Benito Juarez", "Ciudad de Mexico");
+            controlCarteraTested.guardar(domicilio, domicilio.getClass());
+            controlCarteraTested.guardar(domicilio, domicilio.getClass());
+            controlCarteraTested.detenerCartera();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            BaseDeDatos.printSQLException(ex);
+        } catch (DetenerCarteraException ex) {
+            ex.printStackTrace();
+        } catch (NoExisteCarteraException ex) {
+            ex.printStackTrace();
+        } catch (RegistroDuplicadoException ex) {
+            ex.printStackTrace();
+        } catch (AsociacionARegistroInexistenteException ex) {
+            ex.printStackTrace();
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testBuscarTelefonoExistente() {
+
+        System.out.println("buscarTelefonoExistente");
+        try {
+            controlCarteraTested.conectarACartera();
+//            Telefono telefono = new Telefono(2, "5521195514");
+            Set<Telefono> telefonos = controlCarteraTested.buscar(2, Telefono.class);
+            for (Iterator<Telefono> it = telefonos.iterator(); it.hasNext();) {
+                Telefono telefono = (Telefono) it.next();
+                System.out.println("Telefono: " + telefono.getTelefono() + ",id: " + telefono.getAseguradoId());
+            }
+            controlCarteraTested.detenerCartera();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            BaseDeDatos.printSQLException(ex);
+        } catch (DetenerCarteraException ex) {
+            ex.printStackTrace();
+        } catch (NoExisteCarteraException ex) {
+            ex.printStackTrace();
+        } catch (BusquedaException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Test of guardar method, of class ControlCartera.
+     */
+    @Test
+    public void testGuardarVariosAsegurados() {
+        System.out.println("guardarVariosAsegurados");
+        try {
+            controlCarteraTested.conectarACartera();
+            Asegurado asegurado = new Asegurado("Emilio", "Hernández", "Segovia");
+            Asegurado asegurado1 = new Asegurado("Daniel", "Hernández", "Segovia");
+            Asegurado asegurado2 = new Asegurado("Gabriel", "Segovia", "Hernandez");
+            controlCarteraTested.guardar(asegurado, asegurado.getClass());
+            controlCarteraTested.guardar(asegurado1, asegurado.getClass());
+            controlCarteraTested.guardar(asegurado2, asegurado.getClass());
+            controlCarteraTested.detenerCartera();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (DetenerCarteraException ex) {
+            ex.printStackTrace();
+        } catch (NoExisteCarteraException ex) {
+            ex.printStackTrace();
+        } catch (RegistroDuplicadoException ex) {
+            ex.printStackTrace();
+        } catch (AsociacionARegistroInexistenteException ex) {
+            ex.printStackTrace();
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Test of guardar method, of class ControlCartera.
+     */
+    @Test
+    public void testGuardarAsegurado() {
+        System.out.println("guardar Asegurado");
         try {
             controlCarteraTested.conectarACartera();
             Asegurado asegurado = new Asegurado("Emilio", "Hernández", "Segovia");
@@ -109,6 +233,94 @@ public class ControlCarteraTest {
             ex.printStackTrace();
         } catch (AsociacionARegistroInexistenteException ex) {
             ex.printStackTrace();
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Test of guardar method, of class ControlCartera.
+     */
+    @Test
+    public void testGuardarTransaccion() {
+        System.out.println("== TEST == guardar transaccion");
+        try {
+            String nombre = "nuevo";
+            String paterno = "nuevo";
+            String materno = "Perez";
+            controlCarteraTested.conectarACartera();
+            controlCarteraTested.empezarTransaccion();
+            // guarda asegurado nuevo y obten su id
+            Asegurado asegurado = new Asegurado(nombre, paterno, materno);
+            controlCarteraTested.guardar(asegurado, asegurado.getClass());
+            ParametrosAsegurado params = new ParametrosAsegurado();
+            params.putNombre(nombre);
+            params.putApellidoPaterno(paterno);
+            params.putApellidoMaterno(materno);
+            Set<Asegurado> asegurados = controlCarteraTested.buscar(params, Asegurado.class);
+            int id = asegurados.stream().filter(a
+                    -> nombre.equalsIgnoreCase(a.getNombre()) && paterno.equalsIgnoreCase(a.getApellidoPaterno().get()) && materno.equalsIgnoreCase(a.getApellidoMaterno().get())).findAny().get().getId();
+
+            //guarda domicilio, telefonos, email
+            Domicilio domicilio = new Domicilio(id, "Aniceto Ortega", "1330", "casa", "03100", "del valle", "Benito Juarez", "Ciudad de Mexico");
+            controlCarteraTested.guardar(domicilio, domicilio.getClass());
+            Telefono telefono = new Telefono(id, "5521195514");
+            controlCarteraTested.guardar(telefono, telefono.getClass());
+            Email email = new Email(id, "fulano@correo.com");
+            controlCarteraTested.guardar(email, email.getClass());
+
+            //commit
+            controlCarteraTested.commit();
+            controlCarteraTested.terminarTransaccion();
+            controlCarteraTested.detenerCartera();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
+        } catch (DetenerCarteraException ex) {
+            ex.printStackTrace();
+        } catch (NoExisteCarteraException ex) {
+            ex.printStackTrace();
+        } catch (RegistroDuplicadoException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
+        } catch (AsociacionARegistroInexistenteException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
+        } catch (DatosVaciosException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
+        } catch (DatosInvalidosException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
+        } catch (BusquedaException ex) {
+            ex.printStackTrace();
+            try {
+                controlCarteraTested.rollback();
+            } catch (SQLException ex1) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -116,7 +328,8 @@ public class ControlCarteraTest {
     public void testBuscarAseguradoPorId() {
         try {
             controlCarteraTested.conectarACartera();
-            Set<Asegurado> asegurados = controlCarteraTested.buscar(10, Asegurado.class);
+            Set<Asegurado> asegurados = controlCarteraTested.buscar(2, Asegurado.class);
+            asegurados.stream().forEach((a) -> System.out.println(a.getId() + ": " + a.getNombre()));
             controlCarteraTested.detenerCartera();
         } catch (DetenerCarteraException ex) {
             ex.printStackTrace();

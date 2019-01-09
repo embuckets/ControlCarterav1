@@ -81,11 +81,13 @@ public class BaseDeDatos {
                 + ")";
         String CREAR_TABLA_TELEFONOS = "CREATE TABLE telefonos("
                 + "aseguradoId INT NOT NULL REFERENCES asegurados(aseguradoId),"
-                + "telefono varchar(20) NOT NULL"
+                + "telefono varchar(20) NOT NULL,"
+                + "CONSTRAINT UNQ_telefono UNIQUE (aseguradoId, telefono)"
                 + ")";
         String CREAR_TABLA_EMAILS = "CREATE TABLE emails("
                 + "aseguradoId INT NOT NULL REFERENCES asegurados(aseguradoId),"
-                + "email varchar(40) NOT NULL"
+                + "email varchar(40) NOT NULL,"
+                + "CONSTRAINT UNQ_email UNIQUE (aseguradoId, email)"
                 + ")";
         String CREAR_TABLA_ESTADOS = "CREATE TABLE estados("
                 + "estado varchar(50) NOT NULL UNIQUE"
@@ -98,7 +100,8 @@ public class BaseDeDatos {
                 + "codPostal char(5) NOT NULL,"
                 + "colonia varchar(50) NOT NULL,"
                 + "delegacion varchar(50) NOT NULL,"
-                + "estado varchar(50) NOT NULL REFERENCES estados(estado)"//TODO: deberia crear tabla estados?? proly yes
+                + "estado varchar(50) NOT NULL REFERENCES estados(estado),"
+                + "CONSTRAINT UNQ_domicilio UNIQUE (aseguradoId)"//TODO: deberia crear tabla estados?? proly yes
                 + ")";
         String CREAR_TABLA_ASEGURADORAS = "CREATE TABLE aseguradoras("
                 + "aseguradora varchar(20) NOT NULL,"
@@ -132,7 +135,7 @@ public class BaseDeDatos {
                 + "PRIMARY KEY (polizaId),"
                 + "CONSTRAINT UNQ_poliza UNIQUE (numero, inicioVigencia),"
                 + "CONSTRAINT CHK_moneda CHECK (moneda IN ('pesos','dolares','umam') AND "
-                + "monedaDeducible IN ('pesoactuals','dolares','umam') AND "
+                + "monedaDeducible IN ('pesos','dolares','umam') AND "
                 + "monedaSumaAsegurada IN ('pesos','dolares','umam'))"
                 + ")";
         String CREAR_TABLA_RECIBOS = "CREATE TABLE recibos("
@@ -148,7 +151,8 @@ public class BaseDeDatos {
                 + "nombre varchar(50) NOT NULL,"
                 + "apPaterno varchar(50) NOT NULL,"
                 + "apMaterno varchar(50) NOT NULL,"
-                + "nacimiento DATE NOT NULL"
+                + "nacimiento DATE NOT NULL,"
+                + "CONSTRAINT UNQ_beneficiario UNIQUE (polizaId, nombre, apPaterno, apMaterno)"
                 + ")";
         //TODO: TABLA DOCUMENTOS
 //    private String CREAR_TABLA_DOCUMENTOS = "CREATE TABLE documentos ("
@@ -173,6 +177,40 @@ public class BaseDeDatos {
             "INSERT INTO ramos VALUES('ACCIDENTES PERSONALES')",
             "INSERT INTO ramos VALUES('VIDA')",
             "INSERT INTO ramos VALUES('INVERSION')"};
+        String [] INSERTS_ESTADOS = {
+            "INSERT INTO estados VALUES('Aguascalientes')",
+            "INSERT INTO estados VALUES('Baja California')",
+            "INSERT INTO estados VALUES('Baja California Sur')",
+            "INSERT INTO estados VALUES('Campeche')",
+            "INSERT INTO estados VALUES('Chiapas')",
+            "INSERT INTO estados VALUES('Chihuahua')",
+            "INSERT INTO estados VALUES('Ciudad de México')",
+            "INSERT INTO estados VALUES('Coahuila')",
+            "INSERT INTO estados VALUES('Colima')",
+            "INSERT INTO estados VALUES('Durango')",
+            "INSERT INTO estados VALUES('Estado de México')",
+            "INSERT INTO estados VALUES('Guanajuato')",
+            "INSERT INTO estados VALUES('Guerrero')",
+            "INSERT INTO estados VALUES('Hidalgo')",
+            "INSERT INTO estados VALUES('Jalisco')",
+            "INSERT INTO estados VALUES('Michoacán')",
+            "INSERT INTO estados VALUES('Morelos')",
+            "INSERT INTO estados VALUES('Nayarit')",
+            "INSERT INTO estados VALUES('Nuevo León')",
+            "INSERT INTO estados VALUES('Oaxaca')",
+            "INSERT INTO estados VALUES('Puebla')",
+            "INSERT INTO estados VALUES('Querétaro')",
+            "INSERT INTO estados VALUES('Quintana Roo')",
+            "INSERT INTO estados VALUES('San Luis Potosí')",
+            "INSERT INTO estados VALUES('Sinaloa')",
+            "INSERT INTO estados VALUES('Sonora')",
+            "INSERT INTO estados VALUES('Tabasco')",
+            "INSERT INTO estados VALUES('Tamaulipas')",
+            "INSERT INTO estados VALUES('Tlaxcala')",
+            "INSERT INTO estados VALUES('Veracruz')",
+            "INSERT INTO estados VALUES('Yucatán')",
+            "INSERT INTO estados VALUES('Zacatecas')"
+        };
 
         Connection conn = null;
         try {
@@ -207,6 +245,9 @@ public class BaseDeDatos {
             for (String insert : INSERTS_RAMOS) {
                 s.executeUpdate(insert);
             }
+            for (String insert : INSERTS_ESTADOS) {
+                s.executeUpdate(insert);
+            }
             //commit transaccion
             conn.commit();
 
@@ -226,6 +267,23 @@ public class BaseDeDatos {
                 }
             }
         }
+    }
+
+    public void beginTransaction() throws SQLException {
+        connection.setAutoCommit(false);
+    }
+
+    public void endTransaction() throws SQLException {
+        connection.setAutoCommit(true);
+    }
+
+    public void commit() throws SQLException {
+        connection.commit();
+//        connection.setAutoCommit(true);
+    }
+
+    public void rollback() throws SQLException {
+        connection.rollback();
     }
 
     public void detenerBaseDeDatos() throws SQLException {
@@ -589,8 +647,8 @@ public class BaseDeDatos {
         }
         return asegurados;
     }
-    
-    public List<Asegurado> buscarPorParemetros(ParametrosAsegurado params){
+
+    public List<Asegurado> buscarPorParemetros(ParametrosAsegurado params) {
         AseguradoMapper mapper = new AseguradoMapper();
         String query = mapper.createQuery(params);
         Connection conn = null;
@@ -680,8 +738,6 @@ public class BaseDeDatos {
         }
         return maybeAsegurado;
     }
-    
-    
 
     private void configurarAutorizacion(Connection conn) throws SQLException {
 

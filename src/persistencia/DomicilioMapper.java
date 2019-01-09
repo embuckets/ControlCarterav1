@@ -102,7 +102,7 @@ public class DomicilioMapper implements Mapper {
                     preparedStatement.close();
                     preparedStatement = null;
                 } catch (SQLException e) {
-                    printSQLException(e);
+                    throw e;
                 }
             }
         }

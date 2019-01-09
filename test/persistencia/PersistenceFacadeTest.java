@@ -7,7 +7,10 @@ package persistencia;
 
 import dominio.Asegurado;
 import dominio.Poliza;
+import java.sql.SQLException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,23 +51,27 @@ public class PersistenceFacadeTest {
      */
     @Test
     public void testBuscar() {
-        System.out.println("buscar");
-        ParametrosAsegurado parametros = new ParametrosAsegurado();
-        parametros.putNombre("emilio");
-        PersistenceFacade instance = new PersistenceFacade();
-        Set<Asegurado> asegurados = instance.buscar(parametros, Asegurado.class);
-        Object expResult = new Asegurado("emilio", "", "");
-        assertEquals(expResult, asegurados);
-        
-        ParametrosPoliza parametrosPoliza = new ParametrosPoliza();
-        parametrosPoliza.setNumero("NO-123");
-        Set<Poliza> polizas = instance.buscar(parametrosPoliza, Poliza.class);
-        Poliza expPoliza = new Poliza();
-        expPoliza.setNumero("NO-123");
-        assertEquals(expPoliza, asegurados);
-        
-        // TODO review the generated test code and remove the default call to fail.
+        try {
+            System.out.println("buscar");
+            ParametrosAsegurado parametros = new ParametrosAsegurado();
+            parametros.putNombre("emilio");
+            PersistenceFacade instance = new PersistenceFacade();
+            Set<Asegurado> asegurados = instance.buscar(parametros, Asegurado.class);
+            Object expResult = new Asegurado("emilio", "", "");
+            assertEquals(expResult, asegurados);
+            
+            ParametrosPoliza parametrosPoliza = new ParametrosPoliza();
+            parametrosPoliza.setNumero("NO-123");
+            Set<Poliza> polizas = instance.buscar(parametrosPoliza, Poliza.class);
+            Poliza expPoliza = new Poliza();
+            expPoliza.setNumero("NO-123");
+            assertEquals(expPoliza, asegurados);
+            
+            // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
+        } catch (SQLException ex) {
+            Logger.getLogger(PersistenceFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
