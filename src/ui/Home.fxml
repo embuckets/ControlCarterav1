@@ -30,7 +30,7 @@
 <!--<?import ui.HomeController?>-->
 <!--<?import ui.RenovacionCheckBoxFactory?>-->
 
-<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.HomeController">
+<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.HomeController">
    <children>
           <MenuBar>
               <menus>
@@ -55,7 +55,7 @@
          <content>
             <BorderPane minHeight="-Infinity" minWidth="-Infinity">
                 <right>
-                    <VBox BorderPane.alignment="CENTER">
+                    <VBox prefWidth="500.0" BorderPane.alignment="CENTER">
                         <children>
                             <Accordion VBox.vgrow="ALWAYS">
                                 <panes>

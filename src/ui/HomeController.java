@@ -76,44 +76,15 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         assert tableCumple != null : "fx:id=\"tableCumple was not injected\"";
         configTablaCumple();
-        configTreeTableAsegurados();
+        fillTablaAsegurados();
         tableCumple.setItems(initializeAsegurados());
 
     }
 
-    private void configTreeTableAsegurados() {
-        Asegurado asegurado1 = new Asegurado("emilio", "hernandez", "segovia");
-        Asegurado asegurado2 = new Asegurado("daniel", "hernandez", "segovia");
-        asegurado1.setNacimiento(LocalDate.of(1993, Month.MAY, 22));
-        asegurado2.setNacimiento(LocalDate.of(1994, Month.SEPTEMBER, 23));
-
-        Poliza poliza1 = new Poliza();
-        poliza1.setNumero("numeor1");
-        poliza1.setAseguradora("AXA");
-        Poliza poliza2 = new Poliza();
-        poliza2.setNumero("numeor2");
-        poliza2.setAseguradora("GNP");
-        asegurado1.addPoliza(poliza1);
-        asegurado1.addPoliza(poliza2);
-
-        Poliza poliza3 = new Poliza();
-        poliza3.setNumero("numeor3");
-        poliza3.setAseguradora("PLAN SEGURO");
-        asegurado2.addPoliza(poliza3);
-        List<Asegurado> list = new ArrayList<>();
-        list.add(asegurado1);
-        list.add(asegurado2);
-
-        List<ObservableAsegurado> obsList = new ArrayList<>();
-        for (Asegurado ase : list) {
-            ObservableAsegurado obsAsegurdo = new ObservableAsegurado(ase);
-            for (Poliza pol : ase.getPolizas()) {
-                ObservablePoliza obsPoliza = new ObservablePoliza(pol);
-                obsAsegurdo.addObservablePoliza(obsPoliza);
-            }
-            obsList.add(obsAsegurdo);
-        }
-
+    private void fillTablaAsegurados() {
+        List<Asegurado> list = getAsegurados();
+        
+        List<ObservableAsegurado> obsList = createObservableAsegurados(getAsegurados());
         TreeItem root = new TreeItem(new Asegurado("Control Cartera", "", ""));
         root.setExpanded(true);
 
@@ -150,6 +121,44 @@ public class HomeController implements Initializable {
 
         return FXCollections.observableArrayList(list);
     }
+
+    private List<Asegurado> getAsegurados() {
+        Asegurado asegurado1 = new Asegurado("emilio", "hernandez", "segovia");
+        Asegurado asegurado2 = new Asegurado("daniel", "hernandez", "segovia");
+        asegurado1.setNacimiento(LocalDate.of(1993, Month.MAY, 22));
+        asegurado2.setNacimiento(LocalDate.of(1994, Month.SEPTEMBER, 23));
+
+        Poliza poliza1 = new Poliza();
+        poliza1.setNumero("numeor1");
+        poliza1.setAseguradora("AXA");
+        Poliza poliza2 = new Poliza();
+        poliza2.setNumero("numeor2");
+        poliza2.setAseguradora("GNP");
+        asegurado1.addPoliza(poliza1);
+        asegurado1.addPoliza(poliza2);
+
+        Poliza poliza3 = new Poliza();
+        poliza3.setNumero("numeor3");
+        poliza3.setAseguradora("PLAN SEGURO");
+        asegurado2.addPoliza(poliza3);
+        List<Asegurado> list = new ArrayList<>();
+        list.add(asegurado1);
+        list.add(asegurado2);
+        return list;
+    }
+    
+    private List<ObservableAsegurado> createObservableAsegurados (List<Asegurado> list){
+        List<ObservableAsegurado> obsList = new ArrayList<>();
+        for (Asegurado ase : list) {
+            ObservableAsegurado obsAsegurdo = new ObservableAsegurado(ase);
+            for (Poliza pol : ase.getPolizas()) {
+                ObservablePoliza obsPoliza = new ObservablePoliza(pol);
+                obsAsegurdo.addObservablePoliza(obsPoliza);
+            }
+            obsList.add(obsAsegurdo);
+        }
+        return obsList;
+    } 
 
     private void configTablaCumple() {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
