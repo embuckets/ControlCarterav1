@@ -31,28 +31,46 @@
  */
 package ui;
 
+import dominio.ControlCartera;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+    private Stage mainStage;
+    private static Main instance;
+    private ControlCartera controlCartera;
+    
+    public Main() {
+        instance = this;
+    }
+    
+    public static Main getInstance() {
+        return instance;
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Application.launch(Main.class, (java.lang.String[])null);
+        Application.launch(Main.class, (java.lang.String[]) null);
     }
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            VBox page = (VBox) FXMLLoader.load(Main.class.getResource("Home.fxml"));
+            
+            //si existe base de datos ve a home.fxml
+            // si no existe base de datos mostrar dialogo para importar de excel
+            mainStage = primaryStage;
+            Parent page = FXMLLoader.load(getClass().getResource("Home.fxml"));
             Scene scene = new Scene(page);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Control de Cartera");
@@ -62,5 +80,41 @@ public class Main extends Application {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+    
+    public void changeSceneContent(String fxml) throws IOException {
+        Parent page = (Parent) FXMLLoader.load(Main.class.getResource(fxml), null, new JavaFXBuilderFactory());
+        Scene scene = mainStage.getScene();
+        if (scene == null) {
+            scene = new Scene(page);
+//            scene.getStylesheets().add(Main.class.getResource("demo.css").toExternalForm());
+            mainStage.setScene(scene);
+        } else {
+            mainStage.getScene().setRoot(page);
+        }
+//        mainStage.setMaximized(true);
+    }
+    
+    public void changeSceneContent(Parent page) {
+        Scene scene = mainStage.getScene();
+        if (scene == null) {
+            scene = new Scene(page);
+//            scene.getStylesheets().add(Main.class.getResource("demo.css").toExternalForm());
+            mainStage.setScene(scene);
+        } else {
+            mainStage.getScene().setRoot(page);
+            mainStage.show();
+        }
+        
+    }
 
+    @Override
+    public void stop() throws Exception {
+        System.out.println("Closing control cartera");
+//        ControlCartera.getInstance().detenerBaseDeDatos();
+        super.stop(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+    
+}

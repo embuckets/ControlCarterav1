@@ -36,45 +36,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import config.Configuracion;
+import utils.ParametrosAsegurado;
 
 /**
  *
  * @author emilio
  */
-public class BaseDatos {
+public class BaseDeDatos {
 
     private static final String FRAMEWORK = "embedded";
     private static final String PROTOCOL = "jdbc:derby:";
     private static final String DB_NAME = "cartera";
-    
+
 //    private static final String ASEGURADOS_COL_NAME_ID = "aseguradoId";
 //    private static final String ASEGURADOS_COL_NAME_NOMBRE = "nombre";
 //    private static final String ASEGURADOS_COL_NAME_AP_PATERNO = "apPaterno";
-    
-    
-    
-    
-    
-    private static BaseDatos instance;
+    private static BaseDeDatos instance;
     private static Connection connection;
     private static String USER;
     private static String PASSWORD;
 
-    private BaseDatos() {
+    private BaseDeDatos() {
         USER = Configuracion.getInstance().getDefaultBDUser();
         PASSWORD = Configuracion.getInstance().getDefaultBDPassword();
     }
 
-    public static BaseDatos getInstance() {
+    public static BaseDeDatos getInstance() {
         if (instance == null) {
-            instance = new BaseDatos();
+            instance = new BaseDeDatos();
         }
         return instance;
     }
-    
-    
 
-    public void crearBaseDeDatos() {
+    public void crearBaseDeDatos() throws SQLException {
         String CREAR_TABLA_ASEGURADOS = "CREATE TABLE asegurados("
                 + "aseguradoId INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                 + "nombre varchar(50) NOT NULL,"
@@ -87,13 +81,13 @@ public class BaseDatos {
                 + ")";
         String CREAR_TABLA_TELEFONOS = "CREATE TABLE telefonos("
                 + "aseguradoId INT NOT NULL REFERENCES asegurados(aseguradoId),"
-                + "telefono varchar(20) NOT NULL"
+                + "telefono varchar(20) NOT NULL,"
+                + "CONSTRAINT UNQ_telefono UNIQUE (aseguradoId, telefono)"
                 + ")";
         String CREAR_TABLA_EMAILS = "CREATE TABLE emails("
                 + "aseguradoId INT NOT NULL REFERENCES asegurados(aseguradoId),"
-                + "email varchar(40)"
-                //            + "CONSTRAINT FK_aseguradoEmail FOREIGN KEY (aseguradoId)"
-                //            + "REFERENCES asegurados(aseguradoId)"
+                + "email varchar(40) NOT NULL,"
+                + "CONSTRAINT UNQ_email UNIQUE (aseguradoId, email)"
                 + ")";
         String CREAR_TABLA_ESTADOS = "CREATE TABLE estados("
                 + "estado varchar(50) NOT NULL UNIQUE"
@@ -106,7 +100,8 @@ public class BaseDatos {
                 + "codPostal char(5) NOT NULL,"
                 + "colonia varchar(50) NOT NULL,"
                 + "delegacion varchar(50) NOT NULL,"
-                + "estado varchar(50) NOT NULL REFERENCES estados(estado)"//TODO: deberia crear tabla estados?? proly yes
+                + "estado varchar(50) NOT NULL REFERENCES estados(estado),"
+                + "CONSTRAINT UNQ_domicilio UNIQUE (aseguradoId)"//TODO: deberia crear tabla estados?? proly yes
                 + ")";
         String CREAR_TABLA_ASEGURADORAS = "CREATE TABLE aseguradoras("
                 + "aseguradora varchar(20) NOT NULL,"
@@ -135,6 +130,7 @@ public class BaseDatos {
                 + "sumaAsegurada DECIMAL(9,2),"
                 + "monedaSumaAsegurada varchar(10),"
                 + "coaseguro SMALLINT,"//porcentaje
+                //TODO: + "estado varchar(6) NOT NULL, CHECK(estado IN ('vigente, 'vieja'')),"
                 + "comentarios varchar(70),"
                 + "PRIMARY KEY (polizaId),"
                 + "CONSTRAINT UNQ_poliza UNIQUE (numero, inicioVigencia),"
@@ -155,7 +151,8 @@ public class BaseDatos {
                 + "nombre varchar(50) NOT NULL,"
                 + "apPaterno varchar(50) NOT NULL,"
                 + "apMaterno varchar(50) NOT NULL,"
-                + "nacimiento DATE NOT NULL"
+                + "nacimiento DATE NOT NULL,"
+                + "CONSTRAINT UNQ_beneficiario UNIQUE (polizaId, nombre, apPaterno, apMaterno)"
                 + ")";
         //TODO: TABLA DOCUMENTOS
 //    private String CREAR_TABLA_DOCUMENTOS = "CREATE TABLE documentos ("
@@ -180,6 +177,40 @@ public class BaseDatos {
             "INSERT INTO ramos VALUES('ACCIDENTES PERSONALES')",
             "INSERT INTO ramos VALUES('VIDA')",
             "INSERT INTO ramos VALUES('INVERSION')"};
+        String [] INSERTS_ESTADOS = {
+            "INSERT INTO estados VALUES('Aguascalientes')",
+            "INSERT INTO estados VALUES('Baja California')",
+            "INSERT INTO estados VALUES('Baja California Sur')",
+            "INSERT INTO estados VALUES('Campeche')",
+            "INSERT INTO estados VALUES('Chiapas')",
+            "INSERT INTO estados VALUES('Chihuahua')",
+            "INSERT INTO estados VALUES('Ciudad de México')",
+            "INSERT INTO estados VALUES('Coahuila')",
+            "INSERT INTO estados VALUES('Colima')",
+            "INSERT INTO estados VALUES('Durango')",
+            "INSERT INTO estados VALUES('Estado de México')",
+            "INSERT INTO estados VALUES('Guanajuato')",
+            "INSERT INTO estados VALUES('Guerrero')",
+            "INSERT INTO estados VALUES('Hidalgo')",
+            "INSERT INTO estados VALUES('Jalisco')",
+            "INSERT INTO estados VALUES('Michoacán')",
+            "INSERT INTO estados VALUES('Morelos')",
+            "INSERT INTO estados VALUES('Nayarit')",
+            "INSERT INTO estados VALUES('Nuevo León')",
+            "INSERT INTO estados VALUES('Oaxaca')",
+            "INSERT INTO estados VALUES('Puebla')",
+            "INSERT INTO estados VALUES('Querétaro')",
+            "INSERT INTO estados VALUES('Quintana Roo')",
+            "INSERT INTO estados VALUES('San Luis Potosí')",
+            "INSERT INTO estados VALUES('Sinaloa')",
+            "INSERT INTO estados VALUES('Sonora')",
+            "INSERT INTO estados VALUES('Tabasco')",
+            "INSERT INTO estados VALUES('Tamaulipas')",
+            "INSERT INTO estados VALUES('Tlaxcala')",
+            "INSERT INTO estados VALUES('Veracruz')",
+            "INSERT INTO estados VALUES('Yucatán')",
+            "INSERT INTO estados VALUES('Zacatecas')"
+        };
 
         Connection conn = null;
         try {
@@ -192,85 +223,72 @@ public class BaseDatos {
             props.put("collation", "TERRITORY_BASED:PRIMARY");
             //COLLATION: para queries e inserts :PRIMARY ignoran mayusculas y acentos
             conn = DriverManager.getConnection(PROTOCOL + DB_NAME, props);
-//            System.out.println("Creado y conectado a la base de datos " + DB_NAME);
             configurarAutorizacion(conn);
             // Empezar transaccion
             conn.setAutoCommit(false);
             Statement s = conn.createStatement();
             s.executeUpdate(CREAR_TABLA_ASEGURADOS);
-//              conn.commit();
-//            System.out.println("Tabla ASEGURADOS creada");
             s.executeUpdate(CREAR_TABLA_TELEFONOS);
-//                conn.commit();
-//            System.out.println("Tabla TELEFONOS creada");
             s.executeUpdate(CREAR_TABLA_EMAILS);
-//                conn.commit();
-//            System.out.println("Tabla EMAILS creada");
             s.executeUpdate(CREAR_TABLA_ESTADOS);
-//                conn.commit();
-//            System.out.println("Tabla ESTADOS creada");
             s.executeUpdate(CREAR_TABLA_DOMICILIOS);
-//                conn.commit();
-//            System.out.println("Tabla DOMICILIOS creada");
             s.executeUpdate(CREAR_TABLA_ASEGURADORAS);
-//                conn.commit();
-//            System.out.println("Tabla ASEGURADORAS creada");
             s.executeUpdate(CREAR_TABLA_RAMOS);
-//                conn.commit();
-//            System.out.println("Tabla RAMOS creada");
             s.executeUpdate(CREAR_TABLA_POLIZAS);
-//                conn.commit();
-//            System.out.println("Tabla POLIZAS creada");
             s.executeUpdate(CREAR_TABLA_BENEFICIARIOS);
-//                conn.commit();
-//            System.out.println("Tabla BENEFICIARIOS creada");
             s.executeUpdate(CREAR_TABLA_RECIBOS);
-//                conn.commit();
-//            System.out.println("Tabla RECIBOS creada");
             s.executeUpdate(CREAR_INDEX_RECIBOS_COBRANZA);
-//                conn.commit();
-//            System.out.println("Index RECIBOS_COBRANZA creado");
             s.executeUpdate(CREAR_INDEX_RECIBOS_CUBRE_DESDE);
-//                conn.commit();
-//            System.out.println("Index RECIBOS_CUBRE-DESDE creado");
             for (String insert : INSERTS_ASEGURADORAS) {
                 s.executeUpdate(insert);
-//                    conn.commit();
-//                System.out.println("Insert: " + insert);
             }
             for (String insert : INSERTS_RAMOS) {
                 s.executeUpdate(insert);
-//                    conn.commit();
-//                System.out.println("Insert: " + insert);
             }
+            for (String insert : INSERTS_ESTADOS) {
+                s.executeUpdate(insert);
+            }
+            //commit transaccion
             conn.commit();
-            detenerBaseDeDatos();
 
         } catch (SQLException ex) {
-//            System.out.println("ERROR AL CREAR LA BASE DE DATOS");
-            printSQLException(ex);
+            throw ex;
+        } finally {
             if (conn != null) {
                 try {
                     conn.rollback();
-                } catch (SQLException ex1) {
-                    printSQLException(ex1);
+                } catch (SQLException rollbackEx) {
+                    try {
+                        conn.close();
+                    } catch (SQLException closeEx) {
+                        rollbackEx.setNextException(closeEx);
+                        throw rollbackEx;
+                    }
                 }
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                    conn = null;
-                }
-            } catch (SQLException sqle) {
-                printSQLException(sqle);
             }
         }
     }
 
-    public void detenerBaseDeDatos() {
+    public void beginTransaction() throws SQLException {
+        connection.setAutoCommit(false);
+    }
+
+    public void endTransaction() throws SQLException {
+        connection.setAutoCommit(true);
+    }
+
+    public void commit() throws SQLException {
+        connection.commit();
+//        connection.setAutoCommit(true);
+    }
+
+    public void rollback() throws SQLException {
+        connection.rollback();
+    }
+
+    public void detenerBaseDeDatos() throws SQLException {
         try {
-            if (connection != null ){
+            if (connection != null) {
                 connection.close();
                 connection = null;
             }
@@ -280,19 +298,19 @@ public class BaseDatos {
             if (((ex.getErrorCode() == 50000)
                     && ("XJ015".equals(ex.getSQLState())))) {
                 // we got the expected exception
-                System.out.println("Derby shut down normally");
+//                System.out.println("Derby shut down normally");
                 // Note that for single database shutdown, the expected
                 // SQL state is "08006", and the error code is 45000.
             } else {
                 // if the error code or SQLState is different, we have
                 // an unexpected exception (shutdown failed)
-                System.err.println("Derby did not shut down normally");
-                printSQLException(ex);
+//                System.err.println("Derby did not shut down normally");
+                throw ex;
             }
         }
     }
 
-    public static void borrarBaseDeDatos() {
+    public static void borrarBaseDeDatos() throws IOException {
 
         try {
             Files.delete(Paths.get("derby.log"));
@@ -318,7 +336,7 @@ public class BaseDatos {
             });
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw ex;
         }
     }
 
@@ -573,16 +591,20 @@ public class BaseDatos {
         }
     }
 
-    public Connection getConnection() throws SQLException {
-        try {
+    public void contectarABaseDeDatos() throws SQLException {
+        crearConnection();
+    }
+
+    private void crearConnection() throws SQLException {
+        if (connection == null) {
             Properties props = new Properties();
             props.put("user", USER);
             props.put("password", PASSWORD);
             connection = DriverManager.getConnection(PROTOCOL + DB_NAME, props);
-        } catch (SQLException e) {
-//            if (e.getSQLState() == "XJ004")
-            throw e;//SQLState = XJ004: database not found
         }
+    }
+
+    public Connection getConnection() {
         return connection;
     }
 
@@ -594,6 +616,48 @@ public class BaseDatos {
             conn = getConnection();
             Statement s = conn.createStatement();
             resultSet = s.executeQuery("SELECT * FROM asegurados");
+            while (resultSet.next()) {
+                Asegurado asegurado = new Asegurado(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+                asegurado.setRFC(resultSet.getString(5));
+                asegurado.setNacimiento(resultSet.getDate(6));
+                asegurado.setId(resultSet.getInt(1));
+                asegurados.add(asegurado);
+
+            }
+
+        } catch (SQLException ex) {
+            printSQLException(ex);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException ex) {
+                    printSQLException(ex);
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException ex) {
+                    printSQLException(ex);
+                }
+            }
+        }
+        return asegurados;
+    }
+
+    public List<Asegurado> buscarPorParemetros(ParametrosAsegurado params) {
+        AseguradoMapper mapper = new AseguradoMapper();
+        String query = mapper.createQuery(params);
+        Connection conn = null;
+        ResultSet resultSet = null;
+        List<Asegurado> asegurados = new ArrayList<Asegurado>();
+        try {
+            conn = getConnection();
+            Statement s = conn.createStatement();
+            resultSet = s.executeQuery(query);
             while (resultSet.next()) {
                 Asegurado asegurado = new Asegurado(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
                 asegurado.setRFC(resultSet.getString(5));

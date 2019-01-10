@@ -91,12 +91,15 @@ public class Poliza {
         this.sumaAsegurada = Optional.empty();
         this.coaseguro = Optional.empty();
         this.comentarios = Optional.empty();
-
+        this.ramo = Ramo.VIDA;
     }
 
     public Poliza(String ramo) {
         this.ramo = determinarRamo(ramo);
+    }
 
+    public void setAseguradora(String asegurdora) {
+        this.aseguradora = aseguradora;
     }
 
     public String getNumero() {

@@ -21,7 +21,7 @@ public class Asegurado {
     private Optional<String> apellidoPaterno;
     private Optional<String> apellidoMaterno;
     private List<String> telefonos;
-    private List<String> correos;
+    private List<String> emails;
     private Optional<String> RFC;
     private Optional<Domicilio> domicilio;
     private Optional<LocalDate> nacimiento;
@@ -33,7 +33,7 @@ public class Asegurado {
         this.apellidoPaterno = Optional.ofNullable(apellidoPaterno);
         this.apellidoMaterno = Optional.ofNullable(apellidoMaterno);
         this.telefonos = new ArrayList<String>();
-        this.correos = new ArrayList<String>();
+        this.emails = new ArrayList<String>();
         this.RFC = Optional.empty();
         this.domicilio = Optional.empty();
         this.nacimiento = Optional.empty();
@@ -55,6 +55,10 @@ public class Asegurado {
         return false;
     }
 
+    public void addPoliza(Poliza poliza) {
+        polizas.add(poliza);
+    }
+    
     public int getId() {
         return id;
     }
@@ -79,8 +83,8 @@ public class Asegurado {
         return telefonos;
     }
 
-    public List<String> getCorreos() {
-        return correos;
+    public List<String> getEmails() {
+        return emails;
     }
 
     public Optional<String> getRFC() {
@@ -92,7 +96,7 @@ public class Asegurado {
     }
 
     public void agregarCorreo(String correo) {
-        this.correos.add(correo);
+        this.emails.add(correo);
     }
 
     public void agregarTelefono(String telefono) {

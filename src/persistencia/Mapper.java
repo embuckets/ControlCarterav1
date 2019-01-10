@@ -5,6 +5,7 @@
  */
 package persistencia;
 
+import java.sql.SQLException;
 import java.util.Set;
 import utils.Parametros;
 
@@ -14,7 +15,12 @@ import utils.Parametros;
  */
 public interface Mapper {
 
-    <T> Set<T> read(Parametros propiedades);
+    <T> Set<T> read(Parametros propiedades) throws SQLException;
+
+    <T> Set<T> read(int id) throws SQLException;
+
     <T> Set<T> readAll();
+
+    void create(Object object) throws SQLException;
 
 }
